@@ -3,13 +3,19 @@
 
 mod action;
 mod colors;
+mod dialog;
 mod map;
 mod mob;
 mod player;
+mod scene;
 
 use macroquad::prelude::*;
 
-use crate::player::Player;
+use crate::{
+    map::Map,
+    player::Player,
+    scene::{Scene, SceneTransition, map_scene::MapScene},
+};
 
 fn window_conf() -> Conf {
     Conf {
@@ -23,6 +29,7 @@ fn window_conf() -> Conf {
 #[macroquad::main(window_conf)]
 async fn main() {
     let mut player = Player::new();
+    let mut active_scene: Box<dyn Scene> = Box::new(MapScene::new(Map::new()));
 
     loop {
         #[cfg(not(target_arch = "wasm32"))]
@@ -30,10 +37,12 @@ async fn main() {
             break;
         }
 
-        clear_background(Color::from_hex(0x8d8b7f));
-
-        player.draw();
-        player.update();
+        active_scene.draw(&player);
+        match active_scene.update(&mut player) {
+            SceneTransition::Switch(new_scene) => active_scene = new_scene,
+            SceneTransition::Return => {}
+            SceneTransition::None => {}
+        }
 
         next_frame().await
     }

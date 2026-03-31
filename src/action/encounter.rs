@@ -2,6 +2,7 @@ use crate::action::Action;
 
 use crate::mob::Mob;
 use crate::player::Player;
+use crate::scene::SceneTransition;
 
 #[derive(Default)]
 pub struct Encounter {
@@ -9,7 +10,7 @@ pub struct Encounter {
 }
 
 impl Action for Encounter {
-    fn activate(&self, player: &mut Player) {
+    fn activate(&self, player: &mut Player) -> SceneTransition {
         todo!()
     }
 }

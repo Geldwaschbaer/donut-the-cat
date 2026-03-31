@@ -3,7 +3,6 @@ use macroquad::prelude::*;
 use crate::{
     action::encounter::Encounter,
     colors::{ACTIVATED, AVAILABLE},
-    map::room::Room,
 };
 
 pub struct Map {
@@ -20,12 +19,17 @@ impl Map {
         //  \  /
         //   r0
         let rooms = {
-            let mut r0 = Room::with(Box::new(Encounter::default()), vec2(200., 100.), vec![1, 2]);
+            let mut r0 =
+                Room::with_neighbours(Box::new(Encounter::default()), vec2(200., 100.), vec![1, 2]);
             r0.mark_visited();
-            let r1 = Room::with(Box::new(Encounter::default()), vec2(100., 200.), vec![3]);
-            let r2 = Room::with(Box::new(Encounter::default()), vec2(300., 200.), vec![3, 4]);
-            let r3 = Room::with(Box::new(Encounter::default()), vec2(100., 300.), vec![5]);
-            let r4 = Room::with(Box::new(Encounter::default()), vec2(300., 300.), vec![5]);
+            let r1 =
+                Room::with_neighbours(Box::new(Encounter::default()), vec2(100., 200.), vec![3]);
+            let r2 =
+                Room::with_neighbours(Box::new(Encounter::default()), vec2(300., 200.), vec![3, 4]);
+            let r3 =
+                Room::with_neighbours(Box::new(Encounter::default()), vec2(100., 300.), vec![5]);
+            let r4 =
+                Room::with_neighbours(Box::new(Encounter::default()), vec2(300., 300.), vec![5]);
             let r5 = Room::new(Box::new(Encounter::default()), vec2(200., 400.));
             vec![r0, r1, r2, r3, r4, r5]
         };
@@ -78,5 +82,64 @@ impl Map {
 
     pub fn get_rooms_mut(&mut self) -> &mut Vec<Room> {
         &mut self.rooms
+    }
+
+    pub fn get_room(&self, room: usize) -> &Room {
+        &self.rooms.get(room).expect("room exists")
+    }
+}
+
+use crate::action::Action;
+use macroquad::math::Vec2;
+use std::boxed::Box;
+
+pub struct Room {
+    action: Box<dyn Action>,
+    position: Vec2,
+    neighbours: Vec<usize>,
+    visited: bool,
+}
+
+impl Room {
+    pub fn new(action: Box<dyn Action>, position: Vec2) -> Room {
+        Room {
+            action,
+            position,
+            neighbours: Vec::new(),
+            visited: false,
+        }
+    }
+
+    pub fn with_neighbours(
+        action: Box<dyn Action>,
+        position: Vec2,
+        neighbours: Vec<usize>,
+    ) -> Room {
+        Room {
+            action,
+            position,
+            neighbours,
+            visited: false,
+        }
+    }
+
+    pub fn link_neighbour(&mut self, room: usize) {
+        self.neighbours.push(room);
+    }
+
+    pub fn get_position(&self) -> Vec2 {
+        self.position
+    }
+
+    pub fn get_neighbours(&self) -> &Vec<usize> {
+        &self.neighbours
+    }
+
+    pub fn is_visited(&self) -> bool {
+        self.visited
+    }
+
+    pub fn mark_visited(&mut self) {
+        self.visited = true;
     }
 }
