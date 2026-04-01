@@ -18,15 +18,21 @@ pub const KEY_CODES: [KeyCode; 9] = [
     KeyCode::Key9,
 ];
 
-pub struct DialogScene(Dialog);
+pub struct DialogScene {
+    dialog: Dialog,
+    cooldown: f32,
+}
 
 impl DialogScene {
     pub fn new(dialog: Dialog) -> DialogScene {
-        DialogScene(dialog)
+        DialogScene {
+            dialog,
+            cooldown: 0.,
+        }
     }
 
     pub fn get_dialog(&self) -> &Dialog {
-        &self.0
+        &self.dialog
     }
 }
 
@@ -54,15 +60,18 @@ impl Scene for DialogScene {
     }
 
     fn update(&mut self, player: &mut Player) -> SceneTransition {
+        self.cooldown = (self.cooldown - get_frame_time()).max(0.);
         let dialog_box = self
             .get_dialog()
             .get_dialogs()
             .get(player.get_dialog_position())
             .expect("expect dialog node exists");
         for (index, dialog_option) in dialog_box.get_options().iter().enumerate() {
-            if is_key_down(KEY_CODES[index]) {
+            if is_key_down(KEY_CODES[index]) && self.cooldown == 0. {
                 player.set_dialog_position(dialog_option.get_next());
-                return dialog_option.get_event().trigger(player);
+                let transition = dialog_option.get_event().trigger(player);
+                self.cooldown += 0.5;
+                return transition;
             }
             if is_key_down(KeyCode::Left) {}
         }
