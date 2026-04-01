@@ -1,5 +1,6 @@
 use crate::{
     dialog::Dialog,
+    draw::draw_shadowbox,
     player::Player,
     scene::{Scene, SceneTransition},
 };
@@ -32,13 +33,12 @@ impl DialogScene {
 impl Scene for DialogScene {
     fn draw(&self, player: &Player) {
         clear_background(WHITE);
-        draw_rectangle(
+        draw_shadowbox(Rect::new(
             screen_width() * 0.1,
             screen_height() * 0.5,
             screen_width() * 0.8,
             screen_height() * 0.4,
-            DARKGRAY,
-        );
+        ));
         draw_text(
             self.get_dialog().get_title(),
             screen_width() * 0.15,
@@ -56,7 +56,7 @@ impl Scene for DialogScene {
             screen_width() * 0.20,
             screen_height() * 0.55 + 35.,
             24.0,
-            WHITE,
+            BLACK,
         );
         for (index, dialog_option) in dialog_box.get_options().iter().enumerate() {
             let y = screen_height() * 0.55 + 35. + 24. + index as f32 * 25.0;
@@ -65,7 +65,7 @@ impl Scene for DialogScene {
                 screen_width() * 0.16,
                 y,
                 22.0,
-                WHITE,
+                BLACK,
             );
             draw_text(
                 dialog_option.get_description(),

@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 
 use crate::{
-    colors::{ACTIVATED, AVAILABLE},
+    draw::{ACTIVATED, AVAILABLE},
     event::Event,
 };
 

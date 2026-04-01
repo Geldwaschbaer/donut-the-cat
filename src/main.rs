@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
-mod colors;
 mod dialog;
+mod draw;
 mod event;
 mod map;
 mod mob;
