@@ -1,3 +1,4 @@
+pub mod combat_scene;
 pub mod dialog_scene;
 pub mod map_scene;
 

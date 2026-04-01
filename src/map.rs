@@ -23,10 +23,14 @@ impl Map {
                 .await
                 .expect("file exists");
             let welcome: Event = serde_json::from_str(&serialized).unwrap();
+            let serialized = load_string("assets/event/enemy.json")
+                .await
+                .expect("file exists");
+            let combat: Event = serde_json::from_str(&serialized).unwrap();
             let mut r0 = Room::with_neighbours(Event::ReturnToMap, vec2(200., 100.), vec![1, 2]);
             r0.mark_visited();
             let r1 = Room::with_neighbours(welcome, vec2(100., 200.), vec![3]);
-            let r2 = Room::with_neighbours(Event::ReturnToMap, vec2(300., 200.), vec![3, 4]);
+            let r2 = Room::with_neighbours(combat, vec2(300., 200.), vec![3, 4]);
             let r3 = Room::with_neighbours(Event::ReturnToMap, vec2(100., 300.), vec![5]);
             let r4 = Room::with_neighbours(Event::ReturnToMap, vec2(300., 300.), vec![5]);
             let r5 = Room::new(Event::ReturnToMap, vec2(200., 400.));

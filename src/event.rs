@@ -1,7 +1,8 @@
 use crate::{
     dialog::Dialog,
+    mob::Mob,
     player::Player,
-    scene::{SceneTransition, dialog_scene::DialogScene},
+    scene::{SceneTransition, combat_scene::CombatScene, dialog_scene::DialogScene},
 };
 use serde::Deserialize;
 
@@ -14,6 +15,8 @@ pub enum Event {
     ReturnToMap,
     // opens a new dialog
     OpenDialog(Dialog),
+
+    EnterCombat(Mob),
 }
 
 impl Event {
@@ -23,6 +26,9 @@ impl Event {
             Event::ReturnToMap => SceneTransition::Pop,
             Event::OpenDialog(dialog) => {
                 SceneTransition::Push(Box::new(DialogScene::new(dialog.clone())))
+            }
+            Event::EnterCombat(mob) => {
+                SceneTransition::Push(Box::new(CombatScene::new(mob.clone())))
             }
         }
     }

@@ -1,6 +1,9 @@
+use crate::mob::Health;
+
 pub struct Player {
     map_position: usize,
     dialog_position: usize,
+    health: Health,
 }
 
 impl Player {
@@ -8,6 +11,7 @@ impl Player {
         Player {
             map_position: 0,
             dialog_position: 0,
+            health: Health::new(20),
         }
     }
 
@@ -25,5 +29,9 @@ impl Player {
 
     pub fn set_dialog_position(&mut self, position: usize) {
         self.dialog_position = position;
+    }
+
+    pub fn get_health(&self) -> &Health {
+        &self.health
     }
 }
