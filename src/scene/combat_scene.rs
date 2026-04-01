@@ -19,12 +19,12 @@ impl Scene for CombatScene {
         clear_background(WHITE);
 
         draw_lifebar(
-            Vec2::ZERO,
+            &mut Vec2::splat(0.),
             self.get_mob().get_name(),
             self.get_mob().get_health(),
         );
         draw_lifebar(
-            Vec2::new(screen_width() * 0.6, screen_height() * 0.4),
+            &mut Vec2::new(screen_width() * 0.6, screen_height() * 0.4),
             "Player",
             player.get_health(),
         );

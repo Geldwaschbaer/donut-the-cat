@@ -1,6 +1,6 @@
 use crate::{
     dialog::Dialog,
-    draw::draw_shadowbox,
+    draw::*,
     player::Player,
     scene::{Scene, SceneTransition},
 };
@@ -39,42 +39,18 @@ impl Scene for DialogScene {
             screen_width() * 0.8,
             screen_height() * 0.4,
         ));
-        draw_text(
-            self.get_dialog().get_title(),
-            screen_width() * 0.15,
-            screen_height() * 0.55,
-            30.0,
-            WHITE,
-        );
+        let mut pos = Vec2::new(screen_width() * 0.15, screen_height() * 0.55);
+        draw_h1(&mut pos, self.get_dialog().get_title());
         let dialog_box = self
             .get_dialog()
             .get_dialogs()
             .get(player.get_dialog_position())
             .expect("expect dialog node exists");
-        draw_text(
-            dialog_box.get_description(),
-            screen_width() * 0.20,
-            screen_height() * 0.55 + 35.,
-            24.0,
-            BLACK,
+        draw_p(&mut pos, dialog_box.get_description());
+        draw_ol(
+            &mut pos,
+            dialog_box.get_options().iter().map(|o| o.get_description()),
         );
-        for (index, dialog_option) in dialog_box.get_options().iter().enumerate() {
-            let y = screen_height() * 0.55 + 35. + 24. + index as f32 * 25.0;
-            draw_text(
-                &format!("{}. ", index + 1),
-                screen_width() * 0.16,
-                y,
-                22.0,
-                BLACK,
-            );
-            draw_text(
-                dialog_option.get_description(),
-                screen_width() * 0.20,
-                y,
-                22.,
-                RED,
-            );
-        }
     }
 
     fn update(&mut self, player: &mut Player) -> SceneTransition {

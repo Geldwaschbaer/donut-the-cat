@@ -1,10 +1,11 @@
 use crate::mob::Health;
 use macroquad::prelude::*;
+use std::iter::Iterator;
 
 pub const ACTIVATED: Color = Color::from_hex(0x1b252e);
 pub const AVAILABLE: Color = Color::from_hex(0x585858);
 
-pub fn draw_lifebar(offset: Vec2, name: &str, health: &Health) {
+pub fn draw_lifebar(offset: &mut Vec2, name: &str, health: &Health) {
     draw_shadowbox(Rect::new(
         screen_width() * 0.05 + offset.x,
         screen_height() * 0.05 + offset.y,
@@ -12,43 +13,113 @@ pub fn draw_lifebar(offset: Vec2, name: &str, health: &Health) {
         screen_height() * 0.1,
     ));
 
-    draw_text(
-        name,
-        screen_width() * 0.05 + offset.x + 5.0,
-        screen_height() * 0.05 + offset.y + 5.0 + 12.0,
-        22.0,
-        BLACK,
+    let mut pos = Vec2::new(
+        screen_width() * 0.05 + offset.x + 10.0,
+        screen_height() * 0.07 + offset.y,
     );
+    draw_p(&mut pos, name);
 
-    draw_text(
+    draw_p(
+        &mut pos,
         &format!(
             "hp: {}/{}",
             health.get_cur_health(),
             health.get_max_health()
         ),
-        screen_width() * 0.05 + offset.x + 5.0,
-        screen_height() * 0.05 + offset.y + 5.0 + 36.0,
-        14.0,
-        BLACK,
     );
 
     draw_shadowbox_ex(
         Rect::new(
-            screen_width() * 0.15 + offset.x,
-            screen_height() * 0.08 + offset.y,
+            screen_width() * 0.18 + offset.x,
+            screen_height() * 0.11 + offset.y,
             screen_width() * 0.15,
             25.,
         ),
         DrawShadowboxParams {
             padding: Rect::new(2.0, 2.0, 2.0, 3.0),
-            fill: PINK,
-            stroke: BLACK,
+            ..Default::default()
         },
+    );
+    draw_rectangle(
+        screen_width() * 0.18 + offset.x,
+        screen_height() * 0.11 + offset.y,
+        screen_width() * 0.15 * health.get_cur_health() as f32 / health.get_max_health() as f32,
+        25.,
+        PINK,
     );
 }
 
 pub fn draw_shadowbox(rect: Rect) {
     draw_shadowbox_ex(rect, DrawShadowboxParams::default());
+}
+
+pub fn draw_h1(pos: &mut Vec2, text: &str) {
+    draw_text(text, pos.x, pos.y, 30.0, BLACK);
+    pos.y += 30.;
+}
+
+pub fn draw_p(pos: &mut Vec2, text: &str) {
+    draw_p_ex(pos, text, Default::default());
+}
+
+pub struct DrawParagraphParams {
+    font_size: f32,
+    color: Color,
+    split_line: bool,
+    margin: Rect,
+}
+
+impl Default for DrawParagraphParams {
+    fn default() -> DrawParagraphParams {
+        DrawParagraphParams {
+            font_size: 22.,
+            color: BLACK,
+            split_line: false,
+            margin: Rect::new(0., 0., 0., 0.),
+        }
+    }
+}
+
+pub fn draw_p_ex(pos: &mut Vec2, text: &str, params: DrawParagraphParams) {
+    if params.split_line {
+        for line in text.split("\n") {
+            draw_text(
+                line,
+                pos.x + params.margin.x,
+                pos.y + params.margin.y,
+                params.font_size,
+                params.color,
+            );
+            pos.y += params.font_size + params.margin.y + params.margin.h;
+        }
+    } else {
+        draw_text(
+            text,
+            pos.x + params.margin.x,
+            pos.y + params.margin.y,
+            params.font_size,
+            params.color,
+        );
+        pos.y += params.font_size + params.margin.y + params.margin.h;
+    }
+}
+
+pub fn draw_ol<'a, I>(pos: &mut Vec2, items: impl Iterator<Item = I>)
+where
+    I: Into<&'a str>,
+{
+    for (index, item) in items.enumerate() {
+        draw_text(&format!("{}. ", index + 1), pos.x - 10., pos.y, 22., BLACK);
+        draw_p_ex(
+            pos,
+            item.into(),
+            DrawParagraphParams {
+                split_line: true,
+                margin: Rect::new(20.0, 0., 0., 0.),
+                ..Default::default()
+            },
+        );
+    }
 }
 
 pub struct DrawShadowboxParams {
