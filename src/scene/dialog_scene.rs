@@ -1,7 +1,7 @@
 use crate::{
     dialog::Dialog,
     draw::*,
-    player::Player,
+    entity::player::Player,
     scene::{Scene, SceneTransition},
 };
 use macroquad::prelude::*;

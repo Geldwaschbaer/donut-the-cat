@@ -1,7 +1,6 @@
 use crate::{
     dialog::Dialog,
-    mob::Mob,
-    player::Player,
+    entity::{enemy::Enemy, player::Player},
     scene::{SceneTransition, combat_scene::CombatScene, dialog_scene::DialogScene},
 };
 use serde::Deserialize;
@@ -16,7 +15,7 @@ pub enum Event {
     // opens a new dialog
     OpenDialog(Dialog),
 
-    EnterCombat(Mob),
+    EnterCombat(Enemy),
 }
 
 impl Event {

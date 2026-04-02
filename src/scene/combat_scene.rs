@@ -1,15 +1,18 @@
-use super::{Scene, SceneTransition};
-use crate::{draw::*, mob::Mob, player::Player};
+use crate::{
+    draw::*,
+    entity::{enemy::Enemy, player::Player},
+    scene::{Scene, SceneTransition},
+};
 use macroquad::prelude::*;
 
-pub struct CombatScene(Mob);
+pub struct CombatScene(Enemy);
 
 impl CombatScene {
-    pub fn new(mob: Mob) -> CombatScene {
+    pub fn new(mob: Enemy) -> CombatScene {
         CombatScene(mob)
     }
 
-    pub fn get_mob(&self) -> &Mob {
+    pub fn get_enemy(&self) -> &Enemy {
         &self.0
     }
 }
@@ -18,15 +21,10 @@ impl Scene for CombatScene {
     fn draw(&self, player: &Player) {
         clear_background(WHITE);
 
-        draw_lifebar(
-            &mut Vec2::splat(0.),
-            self.get_mob().get_name(),
-            self.get_mob().get_health(),
-        );
+        draw_lifebar(&mut Vec2::splat(0.), self.get_enemy().get_entity());
         draw_lifebar(
             &mut Vec2::new(screen_width() * 0.6, screen_height() * 0.4),
-            "Player",
-            player.get_health(),
+            player.get_entity(),
         );
 
         draw_shadowbox(Rect::new(
@@ -36,20 +34,20 @@ impl Scene for CombatScene {
             screen_height() * 0.3,
         ));
 
-        draw_text(
+        let mut pos = Vec2::new(screen_width() * 0.15, screen_height() * 0.75);
+        draw_h1(&mut pos, self.get_enemy().get_entity().get_name());
+        draw_p(
+            &mut pos,
             &format!(
                 "You encountered a wild {}! What do you do?",
-                self.get_mob().get_name()
+                self.get_enemy().get_entity().get_name()
             ),
-            screen_width() * 0.05 + 6.0,
-            screen_height() * 0.65 + 22.0,
-            22.0,
-            BLACK,
         );
+        draw_ol(&mut pos, ["A", "B", "C"].into_iter());
     }
 
     fn update(&mut self, player: &mut Player) -> SceneTransition {
-        if self.get_mob().get_health().get_cur_health() > 0 {
+        if self.get_enemy().get_entity().get_health().get_cur_health() > 0 {
             // combat continues
 
             SceneTransition::None

@@ -1,6 +1,6 @@
 use crate::{
+    entity::player::Player,
     map::Map,
-    player::Player,
     scene::{Scene, SceneTransition},
 };
 use macroquad::prelude::*;

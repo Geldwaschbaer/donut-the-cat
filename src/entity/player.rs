@@ -1,9 +1,9 @@
-use crate::mob::Health;
+use super::{Entity, Health};
 
 pub struct Player {
     map_position: usize,
     dialog_position: usize,
-    health: Health,
+    entity: Entity,
 }
 
 impl Player {
@@ -11,7 +11,7 @@ impl Player {
         Player {
             map_position: 0,
             dialog_position: 0,
-            health: Health::new(20),
+            entity: Entity::new("Player".into(), Health::new(20), vec![]),
         }
     }
 
@@ -31,7 +31,7 @@ impl Player {
         self.dialog_position = position;
     }
 
-    pub fn get_health(&self) -> &Health {
-        &self.health
+    pub fn get_entity(&self) -> &Entity {
+        &self.entity
     }
 }

@@ -1,11 +1,11 @@
-use crate::mob::Health;
+use crate::entity::Entity;
 use macroquad::prelude::*;
 use std::iter::Iterator;
 
 pub const ACTIVATED: Color = Color::from_hex(0x1b252e);
 pub const AVAILABLE: Color = Color::from_hex(0x585858);
 
-pub fn draw_lifebar(offset: &mut Vec2, name: &str, health: &Health) {
+pub fn draw_lifebar(offset: &mut Vec2, entity: &Entity) {
     draw_shadowbox(Rect::new(
         screen_width() * 0.05 + offset.x,
         screen_height() * 0.05 + offset.y,
@@ -17,8 +17,9 @@ pub fn draw_lifebar(offset: &mut Vec2, name: &str, health: &Health) {
         screen_width() * 0.05 + offset.x + 10.0,
         screen_height() * 0.07 + offset.y,
     );
-    draw_p(&mut pos, name);
+    draw_p(&mut pos, entity.get_name());
 
+    let health = entity.get_health();
     draw_p(
         &mut pos,
         &format!(

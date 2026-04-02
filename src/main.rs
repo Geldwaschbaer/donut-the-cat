@@ -3,17 +3,16 @@
 
 mod dialog;
 mod draw;
+mod entity;
 mod event;
 mod map;
-mod mob;
-mod player;
 mod scene;
 
 use macroquad::prelude::*;
 
 use crate::{
+    entity::player::Player,
     map::Map,
-    player::Player,
     scene::{Scene, SceneManager, map_scene::MapScene},
 };
 

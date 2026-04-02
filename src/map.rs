@@ -22,11 +22,11 @@ impl Map {
             let serialized = load_string("assets/event/welcome.json")
                 .await
                 .expect("file exists");
-            let welcome: Event = serde_json::from_str(&serialized).unwrap();
+            let welcome: Event = serde_json::from_str(&serialized).expect("could not parse event");
             let serialized = load_string("assets/event/enemy.json")
                 .await
                 .expect("file exists");
-            let combat: Event = serde_json::from_str(&serialized).unwrap();
+            let combat: Event = serde_json::from_str(&serialized).expect("could not parse event");
             let mut r0 = Room::with_neighbours(Event::ReturnToMap, vec2(200., 100.), vec![1, 2]);
             r0.mark_visited();
             let r1 = Room::with_neighbours(welcome, vec2(100., 200.), vec![3]);
