@@ -29,6 +29,7 @@ fn window_conf() -> Conf {
 async fn main() {
     let mut player = Player::new();
     let mut manager = SceneManager::new(MapScene::new(Map::new().await));
+    manager.trigger_first_room(&mut player);
 
     loop {
         #[cfg(not(target_arch = "wasm32"))]

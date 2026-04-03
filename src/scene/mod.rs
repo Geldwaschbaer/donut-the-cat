@@ -3,7 +3,7 @@ pub mod dialog_scene;
 pub mod game_over_scene;
 pub mod map_scene;
 
-use crate::{entity::player::Player, scene::map_scene::MapScene};
+use crate::{entity::player::Player, map::Room, scene::map_scene::MapScene};
 use macroquad::prelude::*;
 
 pub const KEY_CODES: [KeyCode; 9] = [
@@ -45,6 +45,32 @@ impl SceneManager {
             stack: Vec::new(),
         }
     }
+
+    pub fn trigger_first_room(&mut self, player: &mut Player) {
+        let first_room = self
+            .map
+            .get_map_mut()
+            .get_rooms_mut()
+            .first_mut()
+            .expect("expect any room exists");
+        first_room.mark_visited();
+        let transition = first_room.get_event().trigger(player);
+        self.manage_transition(transition);
+    }
+
+    fn manage_transition(&mut self, transition: SceneTransition) {
+        match transition {
+            SceneTransition::Push(scene) => self.stack.push(scene),
+            SceneTransition::Pop => {
+                self.stack.pop();
+            }
+            SceneTransition::Replace(scene) => {
+                self.stack.pop();
+                self.stack.push(scene);
+            }
+            SceneTransition::None => {}
+        };
+    }
 }
 
 impl Scene for SceneManager {
@@ -62,17 +88,7 @@ impl Scene for SceneManager {
         } else {
             self.stack.last_mut().expect("vec not empty").update(player)
         };
-        match transition {
-            SceneTransition::Push(scene) => self.stack.push(scene),
-            SceneTransition::Pop => {
-                self.stack.pop();
-            }
-            SceneTransition::Replace(scene) => {
-                self.stack.pop();
-                self.stack.push(scene);
-            }
-            SceneTransition::None => {}
-        };
+        self.manage_transition(transition);
 
         // return value is ignored
         SceneTransition::None

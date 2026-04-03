@@ -15,6 +15,10 @@ impl MapScene {
     pub fn get_map(&self) -> &Map {
         &self.0
     }
+
+    pub fn get_map_mut(&mut self) -> &mut Map {
+        &mut self.0
+    }
 }
 
 impl Scene for MapScene {
