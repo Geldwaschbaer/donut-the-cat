@@ -74,7 +74,7 @@ impl Scene for CombatScene {
     }
 
     fn update(&mut self, player: &mut Player) -> SceneTransition {
-        if self.get_enemy().get_entity().get_health().get_cur_health() > 0 {
+        if self.get_enemy().get_entity().is_alive() {
             // combat continues
             let attack_used = 'val: loop {
                 for (index, attack) in player.get_entity().get_attacks().iter().enumerate() {
@@ -89,9 +89,7 @@ impl Scene for CombatScene {
                     .get_entity_mut()
                     .use_attack(attack, self.0.get_entity_mut());
                 let attack_count = self.get_enemy().get_entity().get_attacks().len();
-                if self.get_enemy().get_entity().get_health().get_cur_health() > 0
-                    && attack_count > 0
-                {
+                if self.get_enemy().get_entity().is_alive() && attack_count > 0 {
                     let attack = rand::gen_range(0, attack_count);
                     self.0
                         .get_entity_mut()
@@ -99,7 +97,7 @@ impl Scene for CombatScene {
                 } else {
                     return player.resolve_all(self.get_enemy().get_on_death());
                 }
-                if player.get_entity().get_health().get_cur_health() <= 0 {
+                if !player.get_entity().is_alive() {
                     return SceneTransition::Push(Box::new(GameOverScene::new(format!(
                         "You were killed by: {}",
                         self.get_enemy().get_entity().get_name()

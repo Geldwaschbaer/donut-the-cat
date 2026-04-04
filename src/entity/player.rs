@@ -1,10 +1,6 @@
 use macroquad::texture::{FilterMode, Texture2D};
 
-use crate::{
-    entity::{Attack, Entity, Health},
-    event::Event,
-    scene::SceneTransition,
-};
+use crate::{entity::Entity, event::Event, scene::SceneTransition};
 
 pub struct Player {
     map_position: usize,
@@ -20,16 +16,7 @@ impl Player {
         Player {
             map_position: 0,
             dialog_position: 0,
-            entity: Entity::new(
-                "DONUT".into(),
-                Health::new(20),
-                vec![
-                    Attack::new("Punch them with your fist!".into(), 6, 0, false),
-                    Attack::new("Trink a heal potion!".into(), 0, 6, false),
-                    Attack::new("Drain the life of your enemies!".into(), 3, 3, true),
-                ],
-                texture,
-            ),
+            entity: Entity::new("DONUT".into(), texture),
         }
     }
 

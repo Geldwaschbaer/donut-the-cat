@@ -19,15 +19,8 @@ pub fn draw_lifebar(offset: &mut Vec2, entity: &Entity) {
     );
     draw_p(&mut pos, entity.get_name());
 
-    let health = entity.get_health();
-    draw_p(
-        &mut pos,
-        &format!(
-            "hp: {}/{}",
-            health.get_cur_health(),
-            health.get_max_health()
-        ),
-    );
+    let health = entity.get_hp();
+    draw_p(&mut pos, &format!("hp: {}/{}", health.0, health.1));
 
     draw_shadowbox_ex(
         Rect::new(
@@ -44,7 +37,7 @@ pub fn draw_lifebar(offset: &mut Vec2, entity: &Entity) {
     draw_rectangle(
         screen_width() * 0.18 + offset.x,
         screen_height() * 0.11 + offset.y,
-        screen_width() * 0.15 * health.get_cur_health() as f32 / health.get_max_health() as f32,
+        screen_width() * 0.15 * health.0 as f32 / health.1 as f32,
         25.,
         PINK,
     );

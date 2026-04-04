@@ -8,12 +8,8 @@
         "options": [
           {
             "description": "Already know everything",
-            "events": [
-              {
-                "type": "ReturnToMap"
-              }
-            ],
-            "next": 0
+            "events": [],
+            "next": 2
           },
           {
             "description": "Tell me more.",
@@ -27,12 +23,8 @@
         "options": [
           {
             "description": "Thanks, that was really helpful!",
-            "events": [
-              {
-                "type": "ReturnToMap"
-              }
-            ],
-            "next": 1
+            "events": [],
+            "next": 2
           },
           {
             "description": "That was ... \nnot really helpful? But better then nothing!",
@@ -41,7 +33,98 @@
                 "type": "ReturnToMap"
               }
             ],
-            "next": 1
+            "next": 2
+          }
+        ]
+      },
+      {
+        "description": "Choose your Class.",
+        "options": [
+          {
+            "description": "Wizard",
+            "events": [
+              {
+                "type": "UpgradeStat",
+                "data": ["Con", 3]
+              },
+              {
+                "type": "UpgradeStat",
+                "data": ["Int", 3]
+              },
+              {
+                "type": "LearnAttack",
+                "data": {
+                  "description": "Fireball",
+                  "base_damage": 3,
+                  "base_heal": 0,
+                  "required_mana": 1,
+                  "scales_with": "Int"
+                }
+              },
+              {
+                "type": "LearnAttack",
+                "data": {
+                  "description": "Meteor",
+                  "base_damage": 6,
+                  "base_heal": 0,
+                  "required_mana": 2,
+                  "scales_with": "Int"
+                }
+              }
+            ],
+            "next": 3
+          },
+          {
+            "description": "Knight",
+            "events": [
+              {
+                "type": "UpgradeStat",
+                "data": ["Con", 4]
+              },
+              {
+                "type": "UpgradeStat",
+                "data": ["Dex", 1]
+              },
+              {
+                "type": "UpgradeStat",
+                "data": ["Str", 2]
+              },
+              {
+                "type": "LearnAttack",
+                "data": {
+                  "description": "Fast Slash",
+                  "base_damage": 2,
+                  "base_heal": 0,
+                  "required_mana": 0,
+                  "scales_with": "Dex"
+                }
+              },
+              {
+                "type": "LearnAttack",
+                "data": {
+                  "description": "Holy Strike",
+                  "base_damage": 4,
+                  "base_heal": 0,
+                  "required_mana": 1,
+                  "scales_with": "Str"
+                }
+              }
+            ],
+            "next": 3
+          }
+        ]
+      },
+      {
+        "description": "All stats and skills were upgraded.",
+        "options": [
+          {
+            "description": "Already know everything",
+            "events": [
+              {
+                "type": "ReturnToMap"
+              }
+            ],
+            "next": 3
           }
         ]
       }

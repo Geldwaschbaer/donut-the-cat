@@ -8,24 +8,49 @@ use serde::Deserialize;
 #[derive(Clone)]
 pub struct Entity {
     name: String,
-    health: Health,
-    count: u32,
+    hit_points: i32,
+    mana: i32,
+    strength: i32,
+    dexterity: i32,
+    constitution: i32,
+    intelligence: i32,
     attacks: Vec<Attack>,
     texture: Texture2D,
 }
 
-pub const fn default_count() -> u32 {
-    1
-}
-
 impl Entity {
-    pub fn new(name: String, health: Health, attacks: Vec<Attack>, texture: Texture2D) -> Entity {
+    pub fn new(name: String, texture: Texture2D) -> Entity {
         Entity {
             name,
-            health,
-            count: 1,
-            attacks,
+            hit_points: 5,
+            mana: 3,
+            strength: 1,
+            dexterity: 1,
+            constitution: 1,
+            intelligence: 1,
+            attacks: Vec::new(),
             texture,
+        }
+    }
+
+    pub fn use_attack(&mut self, attack: usize, target: &mut Entity) {
+        let attack = self.attacks.get(attack).expect("expected attack exists");
+        target.hit_points -= attack.get_damage(self);
+        self.hit_points = (self.hit_points + attack.get_heal(self)).min(self.constitution * 5);
+    }
+
+    pub fn upgrade_stat(&mut self, stat: &Stat, times: i32) {
+        match stat {
+            Stat::Con => {
+                self.constitution += times;
+                self.hit_points += 5 * times;
+            }
+            Stat::Dex => self.dexterity += times,
+            Stat::Int => {
+                self.intelligence += times;
+                self.mana += 3 * times;
+            }
+            Stat::Str => self.strength += times,
         }
     }
 
@@ -33,30 +58,16 @@ impl Entity {
         &self.name
     }
 
-    pub fn get_health(&self) -> &Health {
-        &self.health
+    pub fn get_texture(&self) -> &Texture2D {
+        &self.texture
     }
 
-    pub fn get_count(&self) -> u32 {
-        self.count
+    pub fn get_hp(&self) -> (i32, i32) {
+        (self.hit_points, self.constitution * 5)
     }
 
-    pub fn use_attack(&mut self, attack: usize, target: &mut Entity) {
-        let attack = self.attacks.get(attack).expect("expected attack exists");
-        target.health.cur_health -= attack.damage as i32
-            * if attack.area_of_effect {
-                target.count as i32
-            } else {
-                1
-            };
-        self.health.cur_health = (self.health.cur_health
-            + attack.heal as i32
-                * if attack.area_of_effect {
-                    self.count as i32
-                } else {
-                    1
-                })
-        .min(self.health.max_health as i32);
+    pub fn is_alive(&self) -> bool {
+        self.hit_points > 0
     }
 
     pub fn get_attacks(&self) -> &Vec<Attack> {
@@ -66,18 +77,15 @@ impl Entity {
     pub fn get_attacks_mut(&mut self) -> &mut Vec<Attack> {
         &mut self.attacks
     }
-
-    pub fn get_texture(&self) -> &Texture2D {
-        &self.texture
-    }
 }
 
 #[derive(Deserialize)]
 pub struct EntityBuilder {
     name: String,
-    health: Health,
-    #[serde(default = "default_count")]
-    count: u32,
+    strength: i32,
+    dexterity: i32,
+    constitution: i32,
+    intelligence: i32,
     attacks: Vec<Attack>,
     texture: String,
 }
@@ -89,8 +97,12 @@ impl AsyncFrom<EntityBuilder> for Entity {
         texture.set_filter(FilterMode::Nearest);
         Entity {
             name: value.name,
-            health: value.health,
-            count: value.count,
+            hit_points: value.constitution * 5,
+            mana: value.intelligence * 3,
+            strength: value.strength,
+            dexterity: value.dexterity,
+            constitution: value.constitution,
+            intelligence: value.intelligence,
             attacks: value.attacks,
             texture,
         }
@@ -103,42 +115,44 @@ pub struct Health {
     max_health: u32,
 }
 
-impl Health {
-    pub fn new(health: u32) -> Health {
-        Health {
-            cur_health: health as i32,
-            max_health: health,
-        }
-    }
-
-    pub fn get_cur_health(&self) -> i32 {
-        self.cur_health
-    }
-
-    pub fn get_max_health(&self) -> u32 {
-        self.max_health
-    }
-}
-
 #[derive(Clone, Deserialize)]
 pub struct Attack {
     description: String,
-    damage: u32,
-    heal: u32,
-    area_of_effect: bool,
+    base_damage: i32,
+    base_heal: i32,
+    required_mana: i32,
+    scales_with: Stat,
 }
 
 impl Attack {
-    pub fn new(description: String, damage: u32, heal: u32, area_of_effect: bool) -> Attack {
-        Attack {
-            description,
-            damage,
-            heal,
-            area_of_effect,
-        }
+    pub fn get_damage(&self, user: &Entity) -> i32 {
+        self.base_damage + self.scales_with.get_bonus(user)
+    }
+
+    pub fn get_heal(&self, user: &Entity) -> i32 {
+        self.base_heal + self.scales_with.get_bonus(user)
     }
 
     pub fn get_description(&self) -> &str {
         &self.description
+    }
+}
+
+#[derive(Clone, Deserialize)]
+pub enum Stat {
+    Str,
+    Dex,
+    Con,
+    Int,
+}
+
+impl Stat {
+    pub fn get_bonus(&self, entity: &Entity) -> i32 {
+        match self {
+            Self::Str => entity.strength,
+            Self::Dex => entity.dexterity,
+            Self::Con => entity.constitution,
+            Self::Int => entity.intelligence,
+        }
     }
 }

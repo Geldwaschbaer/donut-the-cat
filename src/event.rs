@@ -1,7 +1,7 @@
 use crate::{
     dialog::{Dialog, DialogBuilder},
     entity::{
-        Attack,
+        Attack, Stat,
         enemy::{Enemy, EnemyBuilder},
         player::Player,
     },
@@ -21,7 +21,7 @@ pub enum Event {
 
     LearnAttack(Attack),
 
-    UpgradeStat,
+    UpgradeStat(Stat, i32),
 }
 
 impl Event {
@@ -42,8 +42,9 @@ impl Event {
                     .push(attack.clone());
                 SceneTransition::None
             }
-            Event::UpgradeStat => {
-                todo!()
+            Event::UpgradeStat(stat, times) => {
+                player.get_entity_mut().upgrade_stat(stat, *times);
+                SceneTransition::None
             }
         }
     }
@@ -61,7 +62,7 @@ pub enum EventBuilder {
 
     LearnAttack(Attack),
 
-    UpgradeStat,
+    UpgradeStat(Stat, i32),
 }
 
 #[async_trait]
@@ -72,7 +73,7 @@ impl AsyncFrom<EventBuilder> for Event {
             EventBuilder::EnterCombat(enemy) => Event::EnterCombat(Enemy::async_from(enemy).await),
             EventBuilder::OpenDialog(dialog) => Event::OpenDialog(Dialog::async_from(dialog).await),
             EventBuilder::LearnAttack(attack) => Event::LearnAttack(attack),
-            EventBuilder::UpgradeStat => Event::UpgradeStat,
+            EventBuilder::UpgradeStat(stat, times) => Event::UpgradeStat(stat, times),
         }
     }
 }

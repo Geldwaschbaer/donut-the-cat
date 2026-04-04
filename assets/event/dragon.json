@@ -3,22 +3,17 @@
   "data": {
     "entity": {
       "name": "Dragon",
-      "health": {
-        "cur_health": 20,
-        "max_health": 20
-      },
+      "dexterity": 3,
+      "intelligence": 6,
+      "strength": 5,
+      "constitution": 8,
       "attacks": [
         {
           "description": "Fire Breath",
-          "damage": 6,
-          "heal": 0,
-          "area_of_effect": true
-        },
-        {
-          "description": "Claws",
-          "damage": 7,
-          "heal": 0,
-          "area_of_effect": false
+          "base_damage": 5,
+          "base_heal": 0,
+          "required_mana": 1,
+          "scales_with": "Int"
         }
       ],
       "texture": "assets/entity/dragon.png"
