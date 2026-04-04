@@ -1,0 +1,146 @@
+{
+  "type": "OpenDialog",
+  "data": {
+    "title": "YOU FOUND A CAMPFIRE",
+    "dialogs": [
+      {
+        "description": "You can choose to either rest or upgrade your stats.",
+        "options": [
+          {
+            "description": "Rest – Fully restore your health and mana.",
+            "events": [],
+            "next": 1
+          },
+          {
+            "description": "Upgrade Stats – Choose and upgrade 2 stats by one level.",
+            "events": [],
+            "next": 2
+          }
+        ]
+      },
+      {
+        "description": "You have rested well!",
+        "options": [
+          {
+            "description": "Thanks!",
+            "events": [
+              {
+                "type": "ReturnToMap"
+              }
+            ],
+            "next": 1
+          }
+        ]
+      },
+      {
+        "description": "Choose witch stat you want to upgrade. (1/2)",
+        "options": [
+          {
+            "description": "Upgrade Strenght",
+            "events": [
+              {
+                "type": "UpgradeStat",
+                "data": ["Str", 1]
+              }
+            ],
+            "next": 3
+          },
+          {
+            "description": "Upgrade Dexterity",
+            "events": [
+              {
+                "type": "UpgradeStat",
+                "data": ["Dex", 1]
+              }
+            ],
+            "next": 3
+          },
+          {
+            "description": "Upgrade Constitution",
+            "events": [
+              {
+                "type": "UpgradeStat",
+                "data": ["Con", 1]
+              }
+            ],
+            "next": 3
+          },
+          {
+            "description": "Upgrade Intelligence",
+            "events": [
+              {
+                "type": "UpgradeStat",
+                "data": ["Int", 1]
+              }
+            ],
+            "next": 3
+          },
+          {
+            "description": "Cancel",
+            "events": [],
+            "next": 0
+          }
+        ]
+      },
+      {
+        "description": "Choose witch stat you want to upgrade. (2/2)",
+        "options": [
+          {
+            "description": "Upgrade Strenght",
+            "events": [
+              {
+                "type": "UpgradeStat",
+                "data": ["Str", 1]
+              }
+            ],
+            "next": 4
+          },
+          {
+            "description": "Upgrade Dexterity",
+            "events": [
+              {
+                "type": "UpgradeStat",
+                "data": ["Dex", 1]
+              }
+            ],
+            "next": 4
+          },
+          {
+            "description": "Upgrade Constitution",
+            "events": [
+              {
+                "type": "UpgradeStat",
+                "data": ["Con", 1]
+              }
+            ],
+            "next": 4
+          },
+          {
+            "description": "Upgrade Intelligence",
+            "events": [
+              {
+                "type": "UpgradeStat",
+                "data": ["Int", 1]
+              }
+            ],
+            "next": 4
+          }
+        ]
+      },
+      {
+        "description": "Your stats were sucessfully upgraded!",
+        "options": [
+          {
+            "description": "Thanks!",
+            "events": [
+              {
+                "type": "ReturnToMap"
+              }
+            ],
+            "next": 4
+          }
+        ]
+      }
+    ]
+  }
+}

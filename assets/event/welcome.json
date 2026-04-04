@@ -1,7 +1,7 @@
 {
   "type": "OpenDialog",
   "data": {
-    "title": "Generic title",
+    "title": "ENTER THE DUNGEON",
     "dialogs": [
       {
         "description": "Welcome to the game.",

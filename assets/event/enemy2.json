@@ -21,7 +21,71 @@
     },
     "on_death": [
       {
-        "type": "ReturnToMap"
+        "type": "OpenDialog",
+        "data": {
+          "title": "Choose your Loot!",
+          "dialogs": [
+            {
+              "description": "Choose witch stat you want to upgrade.",
+              "options": [
+                {
+                  "description": "Upgrade Strenght",
+                  "events": [
+                    {
+                      "type": "UpgradeStat",
+                      "data": ["Str", 1]
+                    }
+                  ],
+                  "next": 1
+                },
+                {
+                  "description": "Upgrade Dexterity",
+                  "events": [
+                    {
+                      "type": "UpgradeStat",
+                      "data": ["Dex", 1]
+                    }
+                  ],
+                  "next": 1
+                },
+                {
+                  "description": "Upgrade Constitution",
+                  "events": [
+                    {
+                      "type": "UpgradeStat",
+                      "data": ["Con", 1]
+                    }
+                  ],
+                  "next": 1
+                },
+                {
+                  "description": "Upgrade Intelligence",
+                  "events": [
+                    {
+                      "type": "UpgradeStat",
+                      "data": ["Int", 1]
+                    }
+                  ],
+                  "next": 1
+                }
+              ]
+            },
+            {
+              "description": "The loot was added to your inventory.",
+              "options": [
+                {
+                  "description": "ok.",
+                  "events": [
+                    {
+                      "type": "ReturnToMap"
+                    }
+                  ],
+                  "next": 1
+                }
+              ]
+            }
+          ]
+        }
       }
     ]
   }
