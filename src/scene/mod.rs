@@ -27,7 +27,7 @@ pub enum SceneTransition {
     // No transition is happening
     None,
     Push(SceneBox),
-    Pop,
+    Clear,
 }
 
 pub type SceneBox = Box<dyn Scene>;
@@ -60,8 +60,8 @@ impl SceneManager {
     fn manage_transition(&mut self, transition: SceneTransition) {
         match transition {
             SceneTransition::Push(scene) => self.stack.push(scene),
-            SceneTransition::Pop => {
-                self.stack.pop();
+            SceneTransition::Clear => {
+                self.stack.clear();
             }
             SceneTransition::None => {}
         };

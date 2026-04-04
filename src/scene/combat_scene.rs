@@ -95,7 +95,7 @@ impl Scene for CombatScene {
             SceneTransition::None
         } else {
             // killed the enemy
-            SceneTransition::Pop
+            SceneTransition::Clear
         }
     }
 }

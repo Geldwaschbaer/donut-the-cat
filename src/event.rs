@@ -27,7 +27,7 @@ pub enum Event {
 impl Event {
     pub fn trigger(&self, player: &mut Player) -> SceneTransition {
         match self {
-            Event::ReturnToMap => SceneTransition::Pop,
+            Event::ReturnToMap => SceneTransition::Clear,
             Event::OpenDialog(dialog) => {
                 player.set_dialog_position(0);
                 SceneTransition::Push(Box::new(DialogScene::new(dialog.clone())))
