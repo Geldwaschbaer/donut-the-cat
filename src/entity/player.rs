@@ -16,7 +16,7 @@ impl Player {
             map_position: 0,
             dialog_position: 0,
             entity: Entity::new(
-                "Player".into(),
+                "DONUT".into(),
                 Health::new(20),
                 vec![
                     Attack::new("Punch them with your fist!".into(), 6, 0, false),

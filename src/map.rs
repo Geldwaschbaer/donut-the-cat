@@ -12,21 +12,14 @@ pub struct Map {
 
 impl Map {
     pub async fn new() -> Map {
-        //    r5
-        //   / \
-        //  r3 r4
-        //  | \ |
-        // r1  r2
-        //  \  /
-        //   r0
-        let layout = {
+        let builder = {
             let serialized = load_string("assets/layout/level-1.json")
                 .await
                 .expect("file exists");
             serde_json::from_str(&serialized).expect("could not parse event")
         };
 
-        Map::async_from(layout).await
+        Map::async_from(builder).await
     }
 
     pub fn draw(&self) {
@@ -111,34 +104,34 @@ impl Room {
 }
 
 #[derive(Deserialize)]
-pub struct Layout(Vec<RoomLayout>);
+pub struct MapBuilder(Vec<RoomBuilder>);
 
 #[derive(Deserialize)]
-pub struct RoomLayout {
+pub struct RoomBuilder {
     event_options: Vec<String>,
     position: (f32, f32),
     neighbours: Vec<usize>,
 }
 
 #[async_trait]
-impl AsyncFrom<Layout> for Map {
-    async fn async_from(layout: Layout) -> Map {
+impl AsyncFrom<MapBuilder> for Map {
+    async fn async_from(builder: MapBuilder) -> Map {
         let mut rooms = Vec::new();
-        for layout in layout.0.into_iter() {
-            rooms.push(Room::async_from(layout).await);
+        for builder in builder.0.into_iter() {
+            rooms.push(Room::async_from(builder).await);
         }
         Map { rooms }
     }
 }
 
 #[async_trait]
-impl AsyncFrom<RoomLayout> for Room {
-    async fn async_from(layout: RoomLayout) -> Room {
+impl AsyncFrom<RoomBuilder> for Room {
+    async fn async_from(builder: RoomBuilder) -> Room {
         let event = {
-            let len = layout.event_options.len();
+            let len = builder.event_options.len();
             if len > 0 {
-                let element = rand::gen_range(0, layout.event_options.len());
-                let file = layout
+                let element = rand::gen_range(0, builder.event_options.len());
+                let file = builder
                     .event_options
                     .get(element)
                     .expect("event option exists");
@@ -151,8 +144,8 @@ impl AsyncFrom<RoomLayout> for Room {
         };
         Room {
             event,
-            position: Vec2::new(layout.position.0, layout.position.1),
-            neighbours: layout.neighbours,
+            position: Vec2::new(builder.position.0, builder.position.1),
+            neighbours: builder.neighbours,
             visited: false,
         }
     }
