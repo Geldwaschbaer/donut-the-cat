@@ -6,7 +6,7 @@
   },
   {
     "position": [0.3, 0.6],
-    "neighbours": [3],
+    "neighbours": [3, 6],
     "event_options": ["assets/event/enemy1.json", "assets/event/enemy2.json"]
   },
   {
@@ -28,5 +28,10 @@
     "position": [0.5, 0.2],
     "neighbours": [],
     "event_options": ["assets/event/dragon.json"]
+  },
+  {
+    "position": [0.5, 0.4],
+    "neighbours": [5],
+    "event_options": ["assets/event/campfire.json"]
   }
 ]

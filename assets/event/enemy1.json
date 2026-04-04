@@ -32,11 +32,46 @@
           "title": "Choose your Loot!",
           "dialogs": [
             {
-              "description": "The sssnake dropped something shiny! You can choose only one:",
+              "description": "Choose witch stat you want to upgrade.",
               "options": [
                 {
-                  "description": "Upgrade a random Stat!",
-                  "events": [],
+                  "description": "Upgrade Strenght",
+                  "events": [
+                    {
+                      "type": "UpgradeStat",
+                      "data": ["Str", 1]
+                    }
+                  ],
+                  "next": 1
+                },
+                {
+                  "description": "Upgrade Dexterity",
+                  "events": [
+                    {
+                      "type": "UpgradeStat",
+                      "data": ["Dex", 1]
+                    }
+                  ],
+                  "next": 1
+                },
+                {
+                  "description": "Upgrade Constitution",
+                  "events": [
+                    {
+                      "type": "UpgradeStat",
+                      "data": ["Con", 1]
+                    }
+                  ],
+                  "next": 1
+                },
+                {
+                  "description": "Upgrade Intelligence",
+                  "events": [
+                    {
+                      "type": "UpgradeStat",
+                      "data": ["Int", 1]
+                    }
+                  ],
                   "next": 1
                 }
               ]
