@@ -20,7 +20,8 @@
           "heal": 0,
           "area_of_effect": false
         }
-      ]
+      ],
+      "texture": "assets/entity/dravhe?.png"
     },
     "on_death": [
       {

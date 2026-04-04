@@ -2,7 +2,7 @@
   "type": "EnterCombat",
   "data": {
     "entity": {
-      "name": "3 Zombies",
+      "name": "ANT COLONY",
       "health": {
         "cur_health": 16,
         "max_health": 16
@@ -21,7 +21,8 @@
           "heal": 0,
           "area_of_effect": false
         }
-      ]
+      ],
+      "texture": "assets/entity/enemy2.png"
     },
     "on_death": [
       {
