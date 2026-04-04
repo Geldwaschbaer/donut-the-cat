@@ -3,22 +3,24 @@
   "data": {
     "entity": {
       "name": "SSSSNAKE",
-      "health": {
-        "cur_health": 20,
-        "max_health": 20
-      },
+      "dexterity": 1,
+      "intelligence": 2,
+      "strength": 1,
+      "constitution": 2,
       "attacks": [
         {
           "description": "Bite",
-          "damage": 4,
-          "heal": 0,
-          "area_of_effect": true
+          "base_damage": 2,
+          "base_heal": 0,
+          "required_mana": 0,
+          "scales_with": "Dex"
         },
         {
           "description": "Poisen",
-          "damage": 5,
-          "heal": 0,
-          "area_of_effect": false
+          "base_damage": 1,
+          "base_heal": 0,
+          "required_mana": 1,
+          "scales_with": "Int"
         }
       ],
       "texture": "assets/entity/enemy1.png"
@@ -30,23 +32,8 @@
           "title": "Choose your Loot!",
           "dialogs": [
             {
-              "description": "The zombies dropped bad loot.",
+              "description": "The sssnake dropped something shiny! You can choose only one:",
               "options": [
-                {
-                  "description": "Learn attack Zombie-Punch!",
-                  "events": [
-                    {
-                      "type": "LearnAttack",
-                      "data": {
-                        "description": "Hit them with the Ultra-Strong Zombie-Punch (TM)",
-                        "damage": 100,
-                        "heal": 0,
-                        "area_of_effect": false
-                      }
-                    }
-                  ],
-                  "next": 1
-                },
                 {
                   "description": "Upgrade a random Stat!",
                   "events": [],
