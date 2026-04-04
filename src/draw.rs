@@ -17,7 +17,7 @@ pub fn draw_lifebar(offset: &mut Vec2, entity: &Entity) {
         screen_width() * 0.05 + offset.x + 10.0,
         screen_height() * 0.07 + offset.y,
     );
-    draw_p(&mut pos, entity.get_name());
+    draw_p(&mut pos, &entity.get_name().to_uppercase());
 
     let health = entity.get_hp();
     let mana = entity.get_mp();
@@ -52,7 +52,7 @@ pub fn draw_shadowbox(rect: Rect) {
 }
 
 pub fn draw_h1(pos: &mut Vec2, text: &str) {
-    draw_text(text, pos.x, pos.y, 30.0, BLACK);
+    draw_text(&text.to_uppercase(), pos.x, pos.y, 30.0, BLACK);
     pos.y += 30.;
 }
 

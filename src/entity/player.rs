@@ -19,7 +19,7 @@ impl Player {
         Player {
             map_position: 0,
             dialog_position: 0,
-            entity: Entity::new("DONUT".into(), texture),
+            entity: Entity::new("Donut".into(), texture),
         }
     }
 
