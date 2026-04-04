@@ -24,12 +24,14 @@ impl Map {
 
     pub fn draw(&self) {
         for room in &self.rooms {
+            let x = room.get_position().x * screen_width();
+            let y = room.get_position().y * screen_height();
             for neig in room.get_neighbours() {
                 let neig = self.rooms.get(*neig).expect("element exists");
                 let choosen = room.is_visited() && neig.is_visited();
                 draw_line(
-                    room.get_position().x * screen_width(),
-                    room.get_position().y * screen_height(),
+                    x,
+                    y,
                     neig.get_position().x * screen_width(),
                     neig.get_position().y * screen_height(),
                     if choosen { 3. } else { 2. },
@@ -37,26 +39,18 @@ impl Map {
                 );
             }
             draw_circle(
-                room.get_position().x * screen_width(),
-                room.get_position().y * screen_height(),
-                14.,
+                x,
+                y,
+                22.,
                 if room.is_visited() {
                     ACTIVATED
                 } else {
                     AVAILABLE
                 },
             );
+            draw_texture(&room.texture, x - 16.0, y - 16.0, WHITE);
             if room.is_visited() {
-                draw_arc(
-                    room.get_position().x * screen_width(),
-                    room.get_position().y * screen_height(),
-                    120,
-                    20.,
-                    20.,
-                    2.,
-                    320.,
-                    ACTIVATED,
-                )
+                draw_arc(x, y, 120, 26., 0., 3., 360., BLACK)
             }
         }
     }
@@ -79,6 +73,7 @@ pub struct Room {
     position: Vec2,
     neighbours: Vec<usize>,
     visited: bool,
+    texture: Texture2D,
 }
 
 impl Room {
@@ -111,6 +106,7 @@ pub struct RoomBuilder {
     event_options: Vec<String>,
     position: (f32, f32),
     neighbours: Vec<usize>,
+    texture: String,
 }
 
 #[async_trait]
@@ -145,11 +141,16 @@ impl AsyncFrom<RoomBuilder> for Room {
                 Event::ReturnToMap
             }
         };
+        let texture = load_texture(&builder.texture)
+            .await
+            .expect("texture exists");
+        texture.set_filter(FilterMode::Nearest);
         Room {
             event,
             position: Vec2::new(builder.position.0, builder.position.1),
             neighbours: builder.neighbours,
             visited: false,
+            texture,
         }
     }
 }

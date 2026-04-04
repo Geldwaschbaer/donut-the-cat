@@ -24,7 +24,6 @@ impl MapScene {
 impl Scene for MapScene {
     fn draw(&self, player: &Player) {
         clear_background(WHITE);
-        self.get_map().draw();
         let room = self
             .get_map()
             .get_rooms()
@@ -41,16 +40,21 @@ impl Scene for MapScene {
                 room.get_position().y * screen_height(),
                 neig.get_position().x * screen_width(),
                 neig.get_position().y * screen_height(),
-                2.,
-                Color::from_hex(0x1b252e),
+                3.,
+                DARKPURPLE,
             );
-            draw_circle(
+            draw_arc(
                 neig.get_position().x * screen_width(),
                 neig.get_position().y * screen_height(),
-                16.,
-                Color::from_hex(0x1b252e),
-            );
+                120,
+                26.,
+                0.,
+                3.,
+                360.,
+                DARKPURPLE,
+            )
         }
+        self.get_map().draw();
     }
 
     fn update(&mut self, player: &mut Player) -> SceneTransition {
@@ -62,7 +66,7 @@ impl Scene for MapScene {
                 let neig = self.get_map().get_room(target);
                 let dx = neig.get_position().x * screen_width() - x;
                 let dy = neig.get_position().y * screen_height() - y;
-                if (dx * dx + dy * dy).sqrt() < 14.0 {
+                if (dx * dx + dy * dy).sqrt() < 26.0 {
                     player.set_map_position(target);
                     self.0
                         .get_rooms_mut()
