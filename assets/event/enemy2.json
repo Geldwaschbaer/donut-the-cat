@@ -2,11 +2,11 @@
   "type": "EnterCombat",
   "data": {
     "entity": {
-      "name": "ANT COLONY",
+      "name": "Ant Colony",
       "dexterity": 1,
       "intelligence": 1,
       "strength": 2,
-      "constitution": 1,
+      "constitution": 3,
       "count": 3,
       "attacks": [
         {
