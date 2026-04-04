@@ -73,6 +73,15 @@ impl Entity {
         (self.mana, self.intelligence * 3)
     }
 
+    pub fn get_stat(&self, stat: &Stat) -> i32 {
+        match stat {
+            Stat::Str => self.strength,
+            Stat::Dex => self.dexterity,
+            Stat::Con => self.constitution,
+            Stat::Int => self.intelligence,
+        }
+    }
+
     pub fn is_alive(&self) -> bool {
         self.hit_points > 0
     }
@@ -128,7 +137,7 @@ pub struct Attack {
 impl Attack {
     pub fn get_damage(&self, user: &Entity) -> i32 {
         if self.base_damage > 0 {
-            self.base_damage + self.scales_with.get_bonus(user)
+            self.base_damage + user.get_stat(&self.scales_with)
         } else {
             0
         }
@@ -136,7 +145,7 @@ impl Attack {
 
     pub fn get_heal(&self, user: &Entity) -> i32 {
         if self.base_heal > 0 {
-            self.base_heal + self.scales_with.get_bonus(user)
+            self.base_heal + user.get_stat(&self.scales_with)
         } else {
             0
         }
@@ -157,15 +166,4 @@ pub enum Stat {
     Dex,
     Con,
     Int,
-}
-
-impl Stat {
-    pub fn get_bonus(&self, entity: &Entity) -> i32 {
-        match self {
-            Self::Str => entity.strength,
-            Self::Dex => entity.dexterity,
-            Self::Con => entity.constitution,
-            Self::Int => entity.intelligence,
-        }
-    }
 }

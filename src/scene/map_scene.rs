@@ -1,5 +1,6 @@
 use crate::{
-    entity::player::Player,
+    draw::{draw_h1, draw_ol, draw_p, draw_shadowbox},
+    entity::{Stat, player::Player},
     map::Map,
     scene::{Scene, SceneTransition},
 };
@@ -55,6 +56,38 @@ impl Scene for MapScene {
             )
         }
         self.get_map().draw();
+
+        draw_shadowbox(Rect::new(
+            screen_width() * 0.8,
+            screen_height() * 0.25,
+            screen_width() * 0.18,
+            screen_height() * 0.2,
+        ));
+        let mut pos = Vec2::new(screen_width() * 0.8 + 20., screen_height() * 0.25 + 40.0);
+        draw_h1(&mut pos, "Legende");
+        draw_ol(
+            &mut pos,
+            ["Endboss", "Boss", "Enemy", "Mystery"].into_iter(),
+        );
+
+        draw_shadowbox(Rect::new(
+            screen_width() * 0.8,
+            screen_height() * 0.55,
+            screen_width() * 0.18,
+            screen_height() * 0.2,
+        ));
+        let mut pos = Vec2::new(screen_width() * 0.8 + 20., screen_height() * 0.55 + 40.0);
+        draw_h1(&mut pos, "Your Stats");
+        draw_p(
+            &mut pos,
+            &format!(
+                "Str: {}\nDex: {}\nCon: {}\nInt: {}",
+                player.get_entity().get_stat(&Stat::Str),
+                player.get_entity().get_stat(&Stat::Dex),
+                player.get_entity().get_stat(&Stat::Con),
+                player.get_entity().get_stat(&Stat::Int)
+            ),
+        );
     }
 
     fn update(&mut self, player: &mut Player) -> SceneTransition {
