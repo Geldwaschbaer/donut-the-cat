@@ -1,15 +1,17 @@
 pub mod enemy;
 pub mod player;
 
+use async_from::{AsyncFrom, async_trait};
+use macroquad::texture::{FilterMode, Texture2D, load_texture};
 use serde::Deserialize;
 
-#[derive(Clone, Deserialize)]
+#[derive(Clone)]
 pub struct Entity {
     name: String,
     health: Health,
-    #[serde(default = "default_count")]
     count: u32,
     attacks: Vec<Attack>,
+    texture: Texture2D,
 }
 
 pub const fn default_count() -> u32 {
@@ -17,12 +19,13 @@ pub const fn default_count() -> u32 {
 }
 
 impl Entity {
-    pub fn new(name: String, health: Health, attacks: Vec<Attack>) -> Entity {
+    pub fn new(name: String, health: Health, attacks: Vec<Attack>, texture: Texture2D) -> Entity {
         Entity {
             name,
             health,
             count: 1,
             attacks,
+            texture,
         }
     }
 
@@ -62,6 +65,35 @@ impl Entity {
 
     pub fn get_attacks_mut(&mut self) -> &mut Vec<Attack> {
         &mut self.attacks
+    }
+
+    pub fn get_texture(&self) -> &Texture2D {
+        &self.texture
+    }
+}
+
+#[derive(Deserialize)]
+pub struct EntityBuilder {
+    name: String,
+    health: Health,
+    #[serde(default = "default_count")]
+    count: u32,
+    attacks: Vec<Attack>,
+    texture: String,
+}
+
+#[async_trait]
+impl AsyncFrom<EntityBuilder> for Entity {
+    async fn async_from(value: EntityBuilder) -> Self {
+        let texture = load_texture(&value.texture).await.expect("texture exists");
+        texture.set_filter(FilterMode::Nearest);
+        Entity {
+            name: value.name,
+            health: value.health,
+            count: value.count,
+            attacks: value.attacks,
+            texture,
+        }
     }
 }
 

@@ -136,8 +136,11 @@ impl AsyncFrom<RoomBuilder> for Room {
                     .get(element)
                     .expect("event option exists");
                 let serialized = load_string(file).await.expect("file exists");
-                serde_json::from_str(&serialized)
-                    .expect(&format!("could not parse event from file '{}'", file))
+                Event::async_from(
+                    serde_json::from_str(&serialized)
+                        .expect(&format!("could not parse event from file '{}'", file)),
+                )
+                .await
             } else {
                 Event::ReturnToMap
             }

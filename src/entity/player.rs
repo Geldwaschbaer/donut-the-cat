@@ -1,3 +1,5 @@
+use macroquad::texture::{FilterMode, Texture2D};
+
 use crate::{
     entity::{Attack, Entity, Health},
     event::Event,
@@ -12,6 +14,9 @@ pub struct Player {
 
 impl Player {
     pub fn new() -> Player {
+        let texture =
+            Texture2D::from_file_with_format(include_bytes!("../../assets/entity/donut.png"), None);
+        texture.set_filter(FilterMode::Nearest);
         Player {
             map_position: 0,
             dialog_position: 0,
@@ -23,6 +28,7 @@ impl Player {
                     Attack::new("Trink a heal potion!".into(), 0, 6, false),
                     Attack::new("Drain the life of your enemies!".into(), 3, 3, true),
                 ],
+                texture,
             ),
         }
     }

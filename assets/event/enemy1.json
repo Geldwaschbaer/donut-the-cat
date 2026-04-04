@@ -2,25 +2,26 @@
   "type": "EnterCombat",
   "data": {
     "entity": {
-      "name": "Zombie",
+      "name": "SSSSNAKE",
       "health": {
         "cur_health": 20,
         "max_health": 20
       },
       "attacks": [
         {
-          "description": "Bad Breath",
+          "description": "Bite",
           "damage": 4,
           "heal": 0,
           "area_of_effect": true
         },
         {
-          "description": "Scratch",
+          "description": "Poisen",
           "damage": 5,
           "heal": 0,
           "area_of_effect": false
         }
-      ]
+      ],
+      "texture": "assets/entity/enemy1.png"
     },
     "on_death": [
       {

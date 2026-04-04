@@ -22,9 +22,29 @@ impl Scene for CombatScene {
         clear_background(WHITE);
 
         draw_lifebar(&mut Vec2::splat(0.), self.get_enemy().get_entity());
+        draw_texture_ex(
+            self.get_enemy().get_entity().get_texture(),
+            screen_width() * 0.6,
+            screen_height() * 0.1,
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(Vec2::splat(256.0)),
+                ..Default::default()
+            },
+        );
         draw_lifebar(
             &mut Vec2::new(screen_width() * 0.6, screen_height() * 0.4),
             player.get_entity(),
+        );
+        draw_texture_ex(
+            player.get_entity().get_texture(),
+            screen_width() * 0.1,
+            screen_height() * 0.25,
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(Vec2::splat(256.0)),
+                ..Default::default()
+            },
         );
 
         draw_shadowbox(Rect::new(

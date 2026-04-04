@@ -1,12 +1,16 @@
 use crate::{
-    dialog::Dialog,
-    entity::{Attack, enemy::Enemy, player::Player},
+    dialog::{Dialog, DialogBuilder},
+    entity::{
+        Attack,
+        enemy::{Enemy, EnemyBuilder},
+        player::Player,
+    },
     scene::{SceneTransition, combat_scene::CombatScene, dialog_scene::DialogScene},
 };
+use async_from::{AsyncFrom, async_trait};
 use serde::Deserialize;
 
-#[derive(Deserialize, Clone)]
-#[serde(tag = "type", content = "data")]
+#[derive(Clone)]
 pub enum Event {
     // return back to the global map
     ReturnToMap,
@@ -41,6 +45,34 @@ impl Event {
             Event::UpgradeStat => {
                 todo!()
             }
+        }
+    }
+}
+
+#[derive(Deserialize)]
+#[serde(tag = "type", content = "data")]
+pub enum EventBuilder {
+    // return back to the global map
+    ReturnToMap,
+    // opens a new dialog
+    OpenDialog(DialogBuilder),
+
+    EnterCombat(EnemyBuilder),
+
+    LearnAttack(Attack),
+
+    UpgradeStat,
+}
+
+#[async_trait]
+impl AsyncFrom<EventBuilder> for Event {
+    async fn async_from(value: EventBuilder) -> Self {
+        match value {
+            EventBuilder::ReturnToMap => Event::ReturnToMap,
+            EventBuilder::EnterCombat(enemy) => Event::EnterCombat(Enemy::async_from(enemy).await),
+            EventBuilder::OpenDialog(dialog) => Event::OpenDialog(Dialog::async_from(dialog).await),
+            EventBuilder::LearnAttack(attack) => Event::LearnAttack(attack),
+            EventBuilder::UpgradeStat => Event::UpgradeStat,
         }
     }
 }
