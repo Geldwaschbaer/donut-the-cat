@@ -1,9 +1,12 @@
+mod buff;
 pub mod enemy;
 pub mod player;
 
 use async_from::{AsyncFrom, async_trait};
 use macroquad::texture::{FilterMode, Texture2D, load_texture};
 use serde::Deserialize;
+
+use crate::entity::buff::Buff;
 
 #[derive(Clone)]
 pub struct Entity {
@@ -15,6 +18,7 @@ pub struct Entity {
     constitution: i32,
     intelligence: i32,
     attacks: Vec<Attack>,
+    buffs: Vec<Buff>,
     texture: Texture2D,
 }
 
@@ -29,6 +33,7 @@ impl Entity {
             constitution: 1,
             intelligence: 1,
             attacks: Vec::new(),
+            buffs: Vec::new(),
             texture,
         }
     }
@@ -36,8 +41,23 @@ impl Entity {
     pub fn use_attack(&mut self, attack: usize, target: &mut Entity) {
         let attack = self.attacks.get(attack).expect("expected attack exists");
         if self.mana >= attack.required_mana {
-            target.hit_points -= attack.get_damage(self);
-            self.hit_points = (self.hit_points + attack.get_heal(self)).min(self.constitution * 5);
+            for buff in &attack.apply_buffs {
+                target.buffs.push(buff.clone())
+            }
+            for buff in &attack.receive_buffs {
+                self.buffs.push(buff.clone())
+            }
+            let mut damage = attack.get_damage(self);
+            let mut heal = attack.get_heal(self);
+            for buff in &self.buffs {
+                damage = buff.translate_damage_applied(damage);
+                heal = buff.translate_heal_received(heal);
+            }
+            for buff in &target.buffs {
+                damage = buff.translate_damage_received(damage);
+            }
+            target.hit_points -= damage;
+            self.hit_points = (self.hit_points + heal).min(self.constitution * 5);
             self.mana -= attack.required_mana;
         }
     }
@@ -55,6 +75,13 @@ impl Entity {
             }
             Stat::Str => self.strength += times,
         }
+    }
+
+    pub fn end_turn(&mut self) {
+        for buff in self.buffs.clone() {
+            buff.end_of_turn(self);
+        }
+        self.buffs.clear();
     }
 
     pub fn get_name(&self) -> &str {
@@ -120,6 +147,7 @@ impl AsyncFrom<EntityBuilder> for Entity {
             constitution: value.constitution,
             intelligence: value.intelligence,
             attacks: value.attacks,
+            buffs: Vec::new(),
             texture,
         }
     }
@@ -128,10 +156,17 @@ impl AsyncFrom<EntityBuilder> for Entity {
 #[derive(Clone, Deserialize)]
 pub struct Attack {
     description: String,
+    #[serde(default = "Default::default")]
     base_damage: i32,
+    #[serde(default = "Default::default")]
     base_heal: i32,
+    #[serde(default = "Default::default")]
     required_mana: i32,
     scales_with: Stat,
+    #[serde(default = "Default::default")]
+    apply_buffs: Vec<Buff>,
+    #[serde(default = "Default::default")]
+    receive_buffs: Vec<Buff>,
 }
 
 impl Attack {

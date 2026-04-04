@@ -76,13 +76,18 @@ impl Scene for CombatScene {
                 player
                     .get_entity_mut()
                     .use_attack(attack, self.enemy.get_entity_mut());
-                let attack_count = self.get_enemy().get_entity().get_attacks().len();
-                if self.get_enemy().get_entity().is_alive() && attack_count > 0 {
-                    let attack = rand::gen_range(0, attack_count);
-                    self.enemy
-                        .get_entity_mut()
-                        .use_attack(attack, player.get_entity_mut());
-                } else {
+                player.get_entity_mut().end_turn();
+                if self.get_enemy().get_entity().is_alive() {
+                    let attack_count = self.get_enemy().get_entity().get_attacks().len();
+                    if attack_count > 0 {
+                        let attack = rand::gen_range(0, attack_count);
+                        self.enemy
+                            .get_entity_mut()
+                            .use_attack(attack, player.get_entity_mut());
+                    }
+                    self.enemy.get_entity_mut().end_turn();
+                }
+                if !self.get_enemy().get_entity().is_alive() {
                     return player.resolve_all(self.get_enemy().get_on_death());
                 }
                 if !player.get_entity().is_alive() {
