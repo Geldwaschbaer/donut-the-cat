@@ -1,7 +1,7 @@
 use crate::{
     draw::*,
     entity::{enemy::Enemy, player::Player},
-    scene::{KEY_CODES, Scene, SceneTransition, game_over_scene::GameOverScene},
+    scene::{Scene, SceneTransition, game_over_scene::GameOverScene},
 };
 use macroquad::prelude::*;
 
@@ -76,14 +76,7 @@ impl Scene for CombatScene {
     fn update(&mut self, player: &mut Player) -> SceneTransition {
         if self.get_enemy().get_entity().is_alive() {
             // combat continues
-            let attack_used = 'val: loop {
-                for (index, attack) in player.get_entity().get_attacks().iter().enumerate() {
-                    if is_key_pressed(KEY_CODES[index]) {
-                        break 'val Some(index);
-                    }
-                }
-                break None;
-            };
+            let attack_used = player.get_attack_used();
             if let Some(attack) = attack_used {
                 player
                     .get_entity_mut()

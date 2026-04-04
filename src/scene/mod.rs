@@ -28,7 +28,6 @@ pub enum SceneTransition {
     None,
     Push(SceneBox),
     Pop,
-    Replace(SceneBox),
 }
 
 pub type SceneBox = Box<dyn Scene>;
@@ -63,10 +62,6 @@ impl SceneManager {
             SceneTransition::Push(scene) => self.stack.push(scene),
             SceneTransition::Pop => {
                 self.stack.pop();
-            }
-            SceneTransition::Replace(scene) => {
-                self.stack.pop();
-                self.stack.push(scene);
             }
             SceneTransition::None => {}
         };

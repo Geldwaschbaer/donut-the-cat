@@ -35,8 +35,11 @@ impl Entity {
 
     pub fn use_attack(&mut self, attack: usize, target: &mut Entity) {
         let attack = self.attacks.get(attack).expect("expected attack exists");
-        target.hit_points -= attack.get_damage(self);
-        self.hit_points = (self.hit_points + attack.get_heal(self)).min(self.constitution * 5);
+        if self.mana >= attack.required_mana {
+            target.hit_points -= attack.get_damage(self);
+            self.hit_points = (self.hit_points + attack.get_heal(self)).min(self.constitution * 5);
+            self.mana -= attack.required_mana;
+        }
     }
 
     pub fn upgrade_stat(&mut self, stat: &Stat, times: i32) {
@@ -107,12 +110,6 @@ impl AsyncFrom<EntityBuilder> for Entity {
             texture,
         }
     }
-}
-
-#[derive(Clone, Deserialize)]
-pub struct Health {
-    cur_health: i32,
-    max_health: u32,
 }
 
 #[derive(Clone, Deserialize)]

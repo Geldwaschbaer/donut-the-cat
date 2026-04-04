@@ -1,6 +1,9 @@
-use macroquad::texture::{FilterMode, Texture2D};
+use macroquad::{
+    input::is_key_pressed,
+    texture::{FilterMode, Texture2D},
+};
 
-use crate::{entity::Entity, event::Event, scene::SceneTransition};
+use crate::{entity::Entity, event::Event, scene::KEY_CODES, scene::SceneTransition};
 
 pub struct Player {
     map_position: usize,
@@ -26,6 +29,15 @@ impl Player {
             transition = event.trigger(self);
         }
         return transition;
+    }
+
+    pub fn get_attack_used(&self) -> Option<usize> {
+        for (index, _) in self.get_entity().get_attacks().iter().enumerate() {
+            if is_key_pressed(KEY_CODES[index]) {
+                return Some(index);
+            }
+        }
+        None
     }
 
     pub fn set_map_position(&mut self, room: usize) {

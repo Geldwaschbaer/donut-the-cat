@@ -9,10 +9,6 @@ pub struct Dialog {
 }
 
 impl Dialog {
-    pub fn new(title: String, dialogs: Vec<DialogBox>) -> Dialog {
-        Dialog { title, dialogs }
-    }
-
     pub fn get_title(&self) -> &str {
         &self.title
     }
@@ -49,13 +45,6 @@ pub struct DialogBox {
 }
 
 impl DialogBox {
-    pub fn new(description: String, options: Vec<DialogOption>) -> DialogBox {
-        DialogBox {
-            description,
-            options,
-        }
-    }
-
     pub fn get_description(&self) -> &str {
         &self.description
     }
@@ -93,14 +82,6 @@ pub struct DialogOption {
 }
 
 impl DialogOption {
-    pub fn new(description: String, events: Vec<Event>, next: usize) -> DialogOption {
-        DialogOption {
-            description,
-            events,
-            next,
-        }
-    }
-
     pub fn get_description(&self) -> &str {
         &self.description
     }

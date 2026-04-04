@@ -16,7 +16,7 @@ impl GameOverScene {
 }
 
 impl Scene for GameOverScene {
-    fn draw(&self, player: &Player) {
+    fn draw(&self, _: &Player) {
         clear_background(BLACK);
         draw_shadowbox_ex(
             Rect::new(
@@ -54,7 +54,7 @@ impl Scene for GameOverScene {
         );
     }
 
-    fn update(&mut self, player: &mut Player) -> SceneTransition {
+    fn update(&mut self, _: &mut Player) -> SceneTransition {
         SceneTransition::None
     }
 }
