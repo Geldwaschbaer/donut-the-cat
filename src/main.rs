@@ -9,6 +9,7 @@ use macroquad::prelude::*;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::{
+    draw::draw_p,
     entity::player::Player,
     map::Map,
     scene::{Scene, SceneManager, map_scene::MapScene},
@@ -35,14 +36,28 @@ async fn main() {
     let mut manager = SceneManager::new(MapScene::new(Map::new().await));
     manager.trigger_first_map_node(&mut player);
 
+    debug!(
+        "Welcome to Donut the cat!\nStarting with:\n - width: {}\n - height: {}",
+        screen_width(),
+        screen_height()
+    );
+
     loop {
         #[cfg(not(target_arch = "wasm32"))]
         if is_key_down(KeyCode::Q) || is_key_down(KeyCode::Escape) {
             break;
         }
 
-        manager.draw(&player);
-        manager.update(&mut player);
+        if screen_width() >= 768.0 && screen_height() >= 556.0 {
+            manager.draw(&player);
+            manager.update(&mut player);
+        } else {
+            clear_background(BLACK);
+            draw_p(
+                &mut Vec2::new(30., 50.),
+                "Your screen size does not meet\nthe minimum required resolution.\nPlease increase your screen size\nto at least 768x556 pixels!",
+            );
+        }
 
         next_frame().await
     }
