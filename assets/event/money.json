@@ -1,0 +1,44 @@
+{
+  "type": "OpenDialog",
+  "data": {
+    "title": "20 EURO ON THE FLOOR",
+    "texture": "assets/dialog/geld_finden.png",
+    "dialogs": [
+      {
+        "description": "You are the luckiest CAT in the WORLD, you just found 20€ lying around on the cold FLOOR. Whatever will you do? =)",
+        "options": [
+          {
+            "description": "Take the MONEY ($$$)",
+            "events": [
+              {
+                "type": "LearnAttack",
+                "data": {
+                  "description": "Make it RAIN",
+                  "base_damage": 3,
+                  "required_mana": 1,
+                  "scales_with": "Con",
+                  "applied_buffs": [{ "type": "Vulnerability"}]
+                }
+              }
+            ],
+            "next": 1
+          }
+        ]
+      },
+      {
+        "description": "Now you are also the RICHEST cat, GO and throw some MONEY at the PEASANTS!!!!",
+        "options": [
+          {
+            "description": "miaow :3 (LET'S BUY SOME SHIT!)",
+            "events": [
+              {
+                "type": "ReturnToMap"
+              }
+            ],
+            "next": 1
+          }
+        ]
+      }
+    ]
+  }
+}
