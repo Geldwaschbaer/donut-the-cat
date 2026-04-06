@@ -56,7 +56,7 @@ impl Entity {
             for buff in &target.buffs {
                 damage = buff.translate_damage_received(damage);
             }
-            target.hit_points -= damage;
+            target.hit_points = (target.hit_points - damage).max(0);
             self.hit_points = (self.hit_points + heal).min(self.constitution * 5);
             self.mana -= attack.required_mana;
         }

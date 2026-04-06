@@ -1,6 +1,6 @@
 use macroquad::{
     input::is_key_pressed,
-    texture::{FilterMode, Texture2D, load_texture},
+    texture::{FilterMode, Texture2D},
 };
 
 use crate::{entity::Entity, event::Event, scene::KEY_CODES, scene::SceneTransition};
