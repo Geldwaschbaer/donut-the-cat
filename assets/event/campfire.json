@@ -102,7 +102,7 @@
                 "data": ["Str", 1]
               }
             ],
-            "next": 3
+            "next": 4
           },
           {
             "description": "Become FASTER!",
@@ -112,7 +112,7 @@
                 "data": ["Dex", 1]
               }
             ],
-            "next": 3
+            "next": 4
           },
           {
             "description": "Experience HEALTH",
@@ -122,7 +122,7 @@
                 "data": ["Con", 1]
               }
             ],
-            "next": 3
+            "next": 4
           },
           {
             "description": "Gain a BRAIN CELL",
