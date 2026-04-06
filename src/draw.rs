@@ -9,7 +9,7 @@ pub const TEXT_COL: Color = Color::from_hex(0x00AA00);
 pub const HEADER_COL: Color = Color::from_hex(0x55FF55);
 pub const BACKGROUND: Color = Color::from_hex(0x000000);
 
-pub fn draw_lifebar(offset: &mut Vec2, entity: &Entity) {
+pub fn draw_lifebar(offset: &mut Vec2, entity: &Entity, player: &Player) {
     draw_shadowbox(Rect::new(
         screen_width() * 0.05 + offset.x,
         screen_height() * 0.05 + offset.y,
@@ -29,6 +29,14 @@ pub fn draw_lifebar(offset: &mut Vec2, entity: &Entity) {
         &mut pos,
         &format!("hp: {}/{}, mp: {}/{}", health.0, health.1, mana.0, mana.1),
     );
+    for (index, buff) in entity.get_buffs().iter().enumerate() {
+        draw_texture(
+            player.get_buff_icon(buff.get_type()),
+            pos.x,
+            pos.y + 38.0 * index as f32,
+            WHITE,
+        );
+    }
 
     draw_shadowbox_ex(
         Rect::new(

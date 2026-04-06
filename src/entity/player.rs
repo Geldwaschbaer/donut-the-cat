@@ -1,16 +1,25 @@
-use macroquad::{input::is_key_pressed, texture::Texture2D};
+use macroquad::{
+    input::is_key_pressed,
+    texture::{Texture2D, load_texture},
+};
 
-use crate::{entity::Entity, event::Event, scene::KEY_CODES, scene::SceneTransition};
+use crate::{
+    entity::{Entity, buff::BuffType},
+    event::Event,
+    scene::KEY_CODES,
+    scene::SceneTransition,
+};
 
 pub struct Player {
     map_position: usize,
     dialog_position: usize,
     entity: Entity,
     combat: Texture2D,
+    icons: [Texture2D; 6],
 }
 
 impl Player {
-    pub fn new() -> Player {
+    pub async fn new() -> Player {
         let texture =
             Texture2D::from_file_with_format(include_bytes!("../../assets/entity/donut.png"), None);
         let combat = Texture2D::from_file_with_format(
@@ -22,6 +31,14 @@ impl Player {
             dialog_position: 0,
             entity: Entity::new("Donut".into(), texture),
             combat,
+            icons: [
+                load_texture("assets/buff/berserk.png").await.unwrap(),
+                load_texture("assets/buff/block.png").await.unwrap(),
+                load_texture("assets/buff/burn.png").await.unwrap(),
+                load_texture("assets/buff/poison.png").await.unwrap(),
+                load_texture("assets/buff/vulnerability.png").await.unwrap(),
+                load_texture("assets/buff/weakness.png").await.unwrap(),
+            ],
         }
     }
 
@@ -68,5 +85,9 @@ impl Player {
 
     pub fn get_combat_bg(&self) -> &Texture2D {
         &self.combat
+    }
+
+    pub fn get_buff_icon(&self, buff: &BuffType) -> &Texture2D {
+        &self.icons[buff.ordinal()]
     }
 }

@@ -18,10 +18,16 @@ impl CombatScene {
         }
     }
 
-    fn draw_entity(&self, entity: &Entity, entity_pos: Vec2, mut lifebar_pos: Vec2) {
+    fn draw_entity(
+        &self,
+        entity: &Entity,
+        player: &Player,
+        entity_pos: Vec2,
+        mut lifebar_pos: Vec2,
+    ) {
         let shadow_texture: Texture2D =
             Texture2D::from_file_with_format(include_bytes!("../../assets/icon/shadow.png"), None);
-        draw_lifebar(&mut lifebar_pos, entity);
+        draw_lifebar(&mut lifebar_pos, entity, player);
         draw_texture_ex(
             &shadow_texture,
             entity_pos.x,
@@ -91,10 +97,10 @@ impl CombatScene {
         let attack_used = player.get_attack_used();
         if let Some(attack) = attack_used {
             self.get_enemy_mut().get_entity_mut().end_turn();
+            player.get_entity_mut().end_turn();
             player
                 .get_entity_mut()
                 .use_attack(attack, self.get_enemy_mut().get_entity_mut());
-            player.get_entity_mut().end_turn();
             if self.get_enemy().get_entity().is_alive() {
                 let attack_count = self.get_enemy().get_entity().get_attacks().len();
                 if attack_count > 0 {
@@ -142,11 +148,13 @@ impl Scene for CombatScene {
 
         self.draw_entity(
             self.get_enemy().get_entity(),
+            player,
             Vec2::new(screen_width() * 0.6, screen_height() * 0.1),
             Vec2::splat(0.),
         );
         self.draw_entity(
             player.get_entity(),
+            player,
             Vec2::new(screen_width() * 0.1, screen_height() * 0.25),
             Vec2::new(screen_width() * 0.6, screen_height() * 0.4),
         );

@@ -18,7 +18,8 @@ pub struct Map {
 impl Map {
     pub async fn new() -> Map {
         let builder = {
-            let serialized = load_string("assets/layout/level-1.json")
+            let layouts = ["assets/layout/level-2.json"];
+            let serialized = load_string(layouts[rand::gen_range(0, layouts.len())])
                 .await
                 .expect("file exists");
             serde_json::from_str(&serialized).expect("could not parse event")
@@ -36,7 +37,10 @@ impl Map {
     }
 
     pub fn get_map_node(&self, map_node: usize) -> &MapNode {
-        &self.map_nodes.get(map_node).expect("map_node exists")
+        &self
+            .map_nodes
+            .get(map_node)
+            .expect(&format!("expect map node {} exists", map_node))
     }
 
     pub fn get_background(&self) -> &Texture2D {
