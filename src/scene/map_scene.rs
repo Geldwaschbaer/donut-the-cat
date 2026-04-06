@@ -179,7 +179,7 @@ impl MapScene {
         );
     }
 
-    fn update_map_drag(&mut self) {
+    fn update_map_dragged(&mut self) {
         let (x, y) = mouse_position();
         if is_mouse_button_down(MouseButton::Middle) || is_mouse_button_down(MouseButton::Right) {
             if let Some(position) = self.last_pos {
@@ -247,7 +247,7 @@ impl Scene for MapScene {
     }
 
     fn update(&mut self, player: &mut Player) -> SceneTransition {
-        self.update_map_drag();
+        self.update_map_dragged();
         self.update_room_clicked(player)
     }
 }
