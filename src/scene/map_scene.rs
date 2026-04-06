@@ -29,7 +29,7 @@ impl MapScene {
             0.0,
             WHITE,
             DrawTextureParams {
-                dest_size: Some(Vec2::new(screen_width(), screen_height())),
+                dest_size: Some(Vec2::new(screen_width(), screen_width()*2.)),
                 ..Default::default()
             },
         );
