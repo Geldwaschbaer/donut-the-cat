@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 use crate::entity::Entity;
 
-#[derive(Copy, Clone, Deserialize)]
+#[derive(Copy, Clone, Debug, Deserialize)]
 pub struct Buff {
     r#type: BuffType,
     #[serde(default = "Default::default")]
@@ -58,7 +58,7 @@ impl Buff {
     }
 }
 
-#[derive(Copy, Clone, Deserialize)]
+#[derive(Copy, Clone, Debug, Deserialize)]
 pub enum BuffType {
     Berserk,
     Block,

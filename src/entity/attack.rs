@@ -12,7 +12,7 @@ pub struct Attack {
     required_mana: i32,
     scales_with: Stat,
     #[serde(default = "Default::default")]
-    apply_buffs: Vec<Buff>,
+    applied_buffs: Vec<Buff>,
     #[serde(default = "Default::default")]
     receive_buffs: Vec<Buff>,
 }
@@ -43,7 +43,7 @@ impl Attack {
     }
 
     pub fn get_applied_buffs(&self) -> &Vec<Buff> {
-        &self.apply_buffs
+        &self.applied_buffs
     }
 
     pub fn get_received_buffs(&self) -> &Vec<Buff> {

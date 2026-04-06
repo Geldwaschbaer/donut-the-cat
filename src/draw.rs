@@ -29,16 +29,6 @@ pub fn draw_lifebar(offset: &mut Vec2, entity: &Entity, player: &Player) {
         &mut pos,
         &format!("hp: {}/{}, mp: {}/{}", health.0, health.1, mana.0, mana.1),
     );
-    for (index, buff) in entity.get_buffs().iter().enumerate() {
-        let ry = pos.y + 38.0 * index as f32;
-        draw_texture(player.get_buff_icon(buff.get_type()), pos.x, ry, WHITE);
-
-        let (x, y) = mouse_position();
-        if (pos.x < x && x < pos.x + 32.0) && (ry < y && y < ry + 32.0) {
-            draw_shadowbox(Rect::new(x, y, 120.0, 30.0));
-            draw_p(&mut Vec2::new(x + 10.0, y + 20.0), &buff.display());
-        }
-    }
 
     draw_shadowbox_ex(
         Rect::new(
@@ -59,6 +49,17 @@ pub fn draw_lifebar(offset: &mut Vec2, entity: &Entity, player: &Player) {
         25.,
         PINK,
     );
+    for (index, buff) in entity.get_buffs().iter().enumerate() {
+        let rx = pos.x + 38.0 * index as f32;
+        let ry = pos.y;
+        draw_texture(player.get_buff_icon(buff.get_type()), rx, ry, WHITE);
+
+        let (x, y) = mouse_position();
+        if (rx < x && x < rx + 32.0) && (ry < y && y < ry + 32.0) {
+            draw_shadowbox(Rect::new(x + 5.0, y + 5.0, 120.0, 30.0));
+            draw_p(&mut Vec2::new(x + 15.0, y + 25.0), &buff.display());
+        }
+    }
 }
 
 pub fn draw_shadowbox(rect: Rect) {
