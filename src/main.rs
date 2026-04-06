@@ -6,6 +6,7 @@ mod map;
 mod scene;
 
 use macroquad::prelude::*;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::{
     entity::player::Player,
@@ -15,7 +16,7 @@ use crate::{
 
 fn window_conf() -> Conf {
     Conf {
-        window_title: String::from("Macroquad Template"),
+        window_title: String::from("Donut the Cat"),
         high_dpi: true,
         sample_count: 2,
         ..Default::default()
@@ -24,6 +25,11 @@ fn window_conf() -> Conf {
 
 #[macroquad::main(window_conf)]
 async fn main() {
+    let start = SystemTime::now();
+    let since_the_epoch = start
+        .duration_since(UNIX_EPOCH)
+        .expect("time should go forward");
+    rand::srand((since_the_epoch.as_millis() >> 64) as u64);
     set_default_filter_mode(FilterMode::Nearest);
     let mut player = Player::new();
     let mut manager = SceneManager::new(MapScene::new(Map::new().await));

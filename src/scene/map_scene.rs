@@ -29,7 +29,7 @@ impl MapScene {
             0.0,
             WHITE,
             DrawTextureParams {
-                dest_size: Some(Vec2::new(screen_width(), screen_width()*2.)),
+                dest_size: Some(Vec2::new(screen_width(), screen_width() * 2.)),
                 ..Default::default()
             },
         );
@@ -103,7 +103,11 @@ impl MapScene {
                 0.,
                 3.,
                 360.,
-                if is_option { NEXT_COL } else { Color::from_rgba(0, 0, 0, 0)},
+                if is_option {
+                    NEXT_COL
+                } else {
+                    Color::from_rgba(0, 0, 0, 0)
+                },
             )
         }
         // Draw the map icon.
