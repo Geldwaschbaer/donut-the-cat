@@ -108,6 +108,14 @@ impl Entity {
         (self.mana, self.intelligence * 3)
     }
 
+    pub fn restore_hp(&mut self, hp: i32) {
+        self.hit_points = (self.hit_points + hp).min(self.constitution * 5);
+    }
+
+    pub fn restore_mp(&mut self, mp: i32) {
+        self.mana = (self.hit_points + mp).min(self.intelligence * 3);
+    }
+
     pub fn get_stat(&self, stat: &Stat) -> i32 {
         match stat {
             Stat::Str => self.strength,

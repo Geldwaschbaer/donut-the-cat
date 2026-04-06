@@ -23,6 +23,10 @@ pub enum Event {
     LearnAttack(Attack),
 
     UpgradeStat(Stat, i32),
+
+    RestoreHp(i32),
+
+    RestoreMp(i32),
 }
 
 impl Event {
@@ -47,6 +51,14 @@ impl Event {
                 player.get_entity_mut().upgrade_stat(stat, *times);
                 SceneTransition::None
             }
+            Event::RestoreHp(hp) => {
+                player.get_entity_mut().restore_hp(*hp);
+                SceneTransition::None
+            }
+            Event::RestoreMp(mp) => {
+                player.get_entity_mut().restore_mp(*mp);
+                SceneTransition::None
+            }
         }
     }
 }
@@ -64,6 +76,10 @@ pub enum EventBuilder {
     LearnAttack(Attack),
 
     UpgradeStat(Stat, i32),
+
+    RestoreHp(i32),
+
+    RestoreMp(i32),
 }
 
 #[async_trait]
@@ -75,6 +91,8 @@ impl AsyncFrom<EventBuilder> for Event {
             EventBuilder::OpenDialog(dialog) => Event::OpenDialog(Dialog::async_from(dialog).await),
             EventBuilder::LearnAttack(attack) => Event::LearnAttack(attack),
             EventBuilder::UpgradeStat(stat, times) => Event::UpgradeStat(stat, times),
+            EventBuilder::RestoreHp(hp) => Event::RestoreHp(hp),
+            EventBuilder::RestoreMp(mp) => Event::RestoreMp(mp),
         }
     }
 }
