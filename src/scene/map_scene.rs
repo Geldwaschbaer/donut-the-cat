@@ -32,7 +32,17 @@ impl MapScene {
 
 impl Scene for MapScene {
     fn draw(&self, player: &Player) {
-        clear_background(WHITE);
+        clear_background(BLACK);
+        draw_texture_ex(
+            self.map.get_background(),
+            0.0,
+            0.0,
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(Vec2::new(screen_width(), screen_height())),
+                ..Default::default()
+            },
+        );
         set_camera(&Camera2D {
             target: vec2(
                 self.camera_pos.x + screen_width() / 2.0,

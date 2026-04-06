@@ -22,6 +22,16 @@ impl CombatScene {
 impl Scene for CombatScene {
     fn draw(&self, player: &Player) {
         clear_background(WHITE);
+        draw_texture_ex(
+            player.get_combat_bg(),
+            0.02 * screen_width(),
+            0.02 * screen_height(),
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(Vec2::new(screen_width() * 0.96, screen_height() * 0.6)),
+                ..Default::default()
+            },
+        );
 
         draw_lifebar(&mut Vec2::splat(0.), self.get_enemy().get_entity());
         draw_texture_ex(

@@ -1,6 +1,6 @@
 use macroquad::{
     input::is_key_pressed,
-    texture::{FilterMode, Texture2D},
+    texture::{FilterMode, Texture2D, load_texture},
 };
 
 use crate::{entity::Entity, event::Event, scene::KEY_CODES, scene::SceneTransition};
@@ -9,6 +9,7 @@ pub struct Player {
     map_position: usize,
     dialog_position: usize,
     entity: Entity,
+    combat: Texture2D,
 }
 
 impl Player {
@@ -16,10 +17,16 @@ impl Player {
         let texture =
             Texture2D::from_file_with_format(include_bytes!("../../assets/entity/donut.png"), None);
         texture.set_filter(FilterMode::Nearest);
+        let combat = Texture2D::from_file_with_format(
+            include_bytes!("../../assets/backgrounds/battle-bg.png"),
+            None,
+        );
+        combat.set_filter(FilterMode::Nearest);
         Player {
             map_position: 0,
             dialog_position: 0,
             entity: Entity::new("Donut".into(), texture),
+            combat,
         }
     }
 
@@ -62,5 +69,9 @@ impl Player {
 
     pub fn get_entity_mut(&mut self) -> &mut Entity {
         &mut self.entity
+    }
+
+    pub fn get_combat_bg(&self) -> &Texture2D {
+        &self.combat
     }
 }

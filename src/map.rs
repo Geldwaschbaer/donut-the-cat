@@ -8,6 +8,7 @@ use serde::Deserialize;
 
 pub struct Map {
     rooms: Vec<Room>,
+    background: Texture2D,
 }
 
 impl Map {
@@ -66,6 +67,10 @@ impl Map {
     pub fn get_room(&self, room: usize) -> &Room {
         &self.rooms.get(room).expect("room exists")
     }
+
+    pub fn get_background(&self) -> &Texture2D {
+        &self.background
+    }
 }
 
 pub struct Room {
@@ -116,7 +121,11 @@ impl AsyncFrom<MapBuilder> for Map {
         for builder in builder.0.into_iter() {
             rooms.push(Room::async_from(builder).await);
         }
-        Map { rooms }
+        let background = load_texture("assets/backgrounds/map-bg.png")
+            .await
+            .expect("map background exists");
+        background.set_filter(FilterMode::Nearest);
+        Map { rooms, background }
     }
 }
 
