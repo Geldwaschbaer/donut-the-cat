@@ -1,6 +1,7 @@
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Copy, Clone, Deserialize)]
+#[repr(u8)]
 pub enum MapIcon {
     Boss,
     Endboss,
@@ -8,4 +9,10 @@ pub enum MapIcon {
     Mystery,
     Shop,
     Start,
+}
+
+impl MapIcon {
+    pub fn ordinal(&self) -> usize {
+        *self as usize
+    }
 }
