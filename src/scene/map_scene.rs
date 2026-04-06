@@ -1,7 +1,7 @@
 use crate::{
     draw::*,
     entity::{player::Player, stat::Stat},
-    map::{Map, MapIcon, MapNode},
+    map::{Map, icon::MapIcon, node::MapNode},
     scene::{Scene, SceneTransition},
 };
 use macroquad::prelude::*;
