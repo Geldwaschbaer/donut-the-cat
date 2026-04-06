@@ -4,7 +4,7 @@ use macroquad::prelude::*;
 use serde::Deserialize;
 
 pub struct Map {
-    rooms: Vec<Room>,
+    map_nodes: Vec<MapNode>,
     background: Texture2D,
     icon_endboss: Texture2D,
     icon_boss: Texture2D,
@@ -26,16 +26,16 @@ impl Map {
         Map::async_from(builder).await
     }
 
-    pub fn get_rooms(&self) -> &Vec<Room> {
-        &self.rooms
+    pub fn get_map_nodes(&self) -> &Vec<MapNode> {
+        &self.map_nodes
     }
 
-    pub fn get_rooms_mut(&mut self) -> &mut Vec<Room> {
-        &mut self.rooms
+    pub fn get_map_nodes_mut(&mut self) -> &mut Vec<MapNode> {
+        &mut self.map_nodes
     }
 
-    pub fn get_room(&self, room: usize) -> &Room {
-        &self.rooms.get(room).expect("room exists")
+    pub fn get_map_node(&self, map_node: usize) -> &MapNode {
+        &self.map_nodes.get(map_node).expect("map_node exists")
     }
 
     pub fn get_background(&self) -> &Texture2D {
@@ -55,14 +55,14 @@ impl Map {
 }
 
 #[derive(Deserialize)]
-pub struct MapBuilder(Vec<RoomBuilder>);
+pub struct MapBuilder(Vec<MapNodeBuilder>);
 
 #[async_trait]
 impl AsyncFrom<MapBuilder> for Map {
     async fn async_from(builder: MapBuilder) -> Map {
-        let mut rooms = Vec::new();
+        let mut map_nodes = Vec::new();
         for builder in builder.0.into_iter() {
-            rooms.push(Room::async_from(builder).await);
+            map_nodes.push(MapNode::async_from(builder).await);
         }
         let background = load_texture("assets/backgrounds/map-bg.png")
             .await
@@ -87,7 +87,7 @@ impl AsyncFrom<MapBuilder> for Map {
             .await
             .expect("map background exists");
         Map {
-            rooms,
+            map_nodes,
             background,
             icon_boss,
             icon_endboss,
@@ -109,7 +109,7 @@ pub enum MapIcon {
     Start,
 }
 
-pub struct Room {
+pub struct MapNode {
     event: Event,
     position: Vec2,
     neighbours: Vec<usize>,
@@ -117,7 +117,7 @@ pub struct Room {
     icon: MapIcon,
 }
 
-impl Room {
+impl MapNode {
     pub fn get_event(&self) -> &Event {
         &self.event
     }
@@ -144,7 +144,7 @@ impl Room {
 }
 
 #[derive(Deserialize)]
-pub struct RoomBuilder {
+pub struct MapNodeBuilder {
     event_options: Vec<String>,
     position: (f32, f32),
     neighbours: Vec<usize>,
@@ -152,8 +152,8 @@ pub struct RoomBuilder {
 }
 
 #[async_trait]
-impl AsyncFrom<RoomBuilder> for Room {
-    async fn async_from(builder: RoomBuilder) -> Room {
+impl AsyncFrom<MapNodeBuilder> for MapNode {
+    async fn async_from(builder: MapNodeBuilder) -> MapNode {
         let event = {
             let len = builder.event_options.len();
             if len > 0 {
@@ -172,7 +172,7 @@ impl AsyncFrom<RoomBuilder> for Room {
                 Event::ReturnToMap
             }
         };
-        Room {
+        MapNode {
             event,
             position: Vec2::new(builder.position.0, builder.position.1),
             neighbours: builder.neighbours,

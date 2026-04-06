@@ -42,8 +42,8 @@ impl Player {
         None
     }
 
-    pub fn set_map_position(&mut self, room: usize) {
-        self.map_position = room;
+    pub fn set_map_position(&mut self, map_node: usize) {
+        self.map_position = map_node;
     }
 
     pub fn get_map_position(&self) -> usize {

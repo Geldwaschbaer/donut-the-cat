@@ -45,15 +45,15 @@ impl SceneManager {
         }
     }
 
-    pub fn trigger_first_room(&mut self, player: &mut Player) {
-        let first_room = self
+    pub fn trigger_first_map_node(&mut self, player: &mut Player) {
+        let first_map_node = self
             .map
             .get_map_mut()
-            .get_rooms_mut()
+            .get_map_nodes_mut()
             .first_mut()
-            .expect("expect any room exists");
-        first_room.mark_visited();
-        let transition = first_room.get_event().trigger(player);
+            .expect("expect any map_node exists");
+        first_map_node.mark_visited();
+        let transition = first_map_node.get_event().trigger(player);
         self.manage_transition(transition);
     }
 

@@ -1,7 +1,7 @@
 use crate::{
     draw::*,
     entity::{Stat, player::Player},
-    map::{Map, MapIcon, Room},
+    map::{Map, MapIcon, MapNode},
     scene::{Scene, SceneTransition},
 };
 use macroquad::prelude::*;
@@ -45,28 +45,28 @@ impl MapScene {
             zoom: vec2(2.0 / screen_width(), 2.0 / screen_height()),
             ..Default::default()
         });
-        // We first draw the connections and then the rooms themself,
-        // because otherwise the connections would be drawn over the room icons.
-        for room in self.get_map().get_rooms() {
-            self.draw_connections(room, player);
+        // We first draw the connections and then the map_nodes themself,
+        // because otherwise the connections would be drawn over the map_node icons.
+        for map_node in self.get_map().get_map_nodes() {
+            self.draw_connections(map_node, player);
         }
-        for room in self.get_map().get_rooms() {
-            self.draw_room(room, player);
+        for map_node in self.get_map().get_map_nodes() {
+            self.draw_map_node(map_node, player);
         }
         // Reset camera.
         set_default_camera();
     }
 
-    fn draw_connections(&self, room: &Room, player: &Player) {
-        for neig in room.get_neighbours() {
-            let neig = self.get_map().get_room(*neig);
-            let is_choosen = room.is_visited() && neig.is_visited();
+    fn draw_connections(&self, map_node: &MapNode, player: &Player) {
+        for neig in map_node.get_neighbours() {
+            let neig = self.get_map().get_map_node(*neig);
+            let is_choosen = map_node.is_visited() && neig.is_visited();
             let is_option = self.is_player_option(neig, player);
             self.draw_path(
-                room,
+                map_node,
                 neig,
                 is_option || is_choosen,
-                if is_option && room.is_visited() {
+                if is_option && map_node.is_visited() {
                     VIOLET
                 } else if is_choosen {
                     ACTIVATED
@@ -77,24 +77,24 @@ impl MapScene {
         }
     }
 
-    fn draw_room(&self, room: &Room, player: &Player) {
-        let x = room.get_position().x * screen_width();
-        let y = room.get_position().y * screen_height();
-        let is_option = self.is_player_option(room, player);
+    fn draw_map_node(&self, map_node: &MapNode, player: &Player) {
+        let x = map_node.get_position().x * screen_width();
+        let y = map_node.get_position().y * screen_height();
+        let is_option = self.is_player_option(map_node, player);
         draw_circle(
             x,
             y,
             22.,
             if is_option {
                 VIOLET
-            } else if room.is_visited() {
+            } else if map_node.is_visited() {
                 ACTIVATED
             } else {
                 AVAILABLE
             },
         );
-        // If this room can be choosen by the player or was already visited, draw a ring around it.
-        if is_option || room.is_visited() {
+        // If this map_node can be choosen by the player or was already visited, draw a ring around it.
+        if is_option || map_node.is_visited() {
             draw_arc(
                 x,
                 y,
@@ -108,14 +108,14 @@ impl MapScene {
         }
         // Draw the map icon.
         draw_texture(
-            self.get_map().get_icon(room.get_icon()),
+            self.get_map().get_icon(map_node.get_icon()),
             x - 16.0,
             y - 16.0,
             WHITE,
         );
     }
 
-    fn draw_path(&self, start: &Room, end: &Room, thicker: bool, color: Color) {
+    fn draw_path(&self, start: &MapNode, end: &MapNode, thicker: bool, color: Color) {
         draw_line(
             start.get_position().x * screen_width(),
             start.get_position().y * screen_height(),
@@ -191,38 +191,42 @@ impl MapScene {
         self.last_pos = Some(Vec2 { x, y });
     }
 
-    fn update_room_clicked(&mut self, player: &mut Player) -> SceneTransition {
+    fn update_node_clicked(&mut self, player: &mut Player) -> SceneTransition {
         if is_mouse_button_down(MouseButton::Left) {
             let (x, y) = mouse_position();
-            let room = self.get_map().get_room(player.get_map_position());
-            for neig_num in room.get_neighbours() {
+            let map_node = self.get_map().get_map_node(player.get_map_position());
+            for neig_num in map_node.get_neighbours() {
                 let target = *neig_num;
-                let neig = self.get_map().get_room(target);
+                let neig = self.get_map().get_map_node(target);
                 let dx = neig.get_position().x * screen_width() - x - self.camera_pos.x;
                 let dy = neig.get_position().y * screen_height() - y - self.camera_pos.y;
                 if (dx * dx + dy * dy).sqrt() < 26.0 {
                     player.set_map_position(target);
                     self.map
-                        .get_rooms_mut()
+                        .get_map_nodes_mut()
                         .get_mut(target)
-                        .expect("expected room to enter exists")
+                        .expect("expected map_node to enter exists")
                         .mark_visited();
-                    return self.get_map().get_room(target).get_event().trigger(player);
+                    return self
+                        .get_map()
+                        .get_map_node(target)
+                        .get_event()
+                        .trigger(player);
                 }
             }
         }
         SceneTransition::None
     }
 
-    fn is_player_option(&self, room: &Room, player: &Player) -> bool {
+    fn is_player_option(&self, map_node: &MapNode, player: &Player) -> bool {
         let player_position = self
             .get_map()
-            .get_rooms()
+            .get_map_nodes()
             .get(player.get_map_position())
             .expect("expect exists");
         for neig in player_position.get_neighbours() {
-            let neig = self.get_map().get_room(*neig);
-            if std::ptr::eq(neig, room) {
+            let neig = self.get_map().get_map_node(*neig);
+            if std::ptr::eq(neig, map_node) {
                 return true;
             }
         }
@@ -248,6 +252,6 @@ impl Scene for MapScene {
 
     fn update(&mut self, player: &mut Player) -> SceneTransition {
         self.update_map_dragged();
-        self.update_room_clicked(player)
+        self.update_node_clicked(player)
     }
 }
