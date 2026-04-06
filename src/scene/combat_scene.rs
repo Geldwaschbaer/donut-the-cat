@@ -127,6 +127,7 @@ impl CombatScene {
     }
 
     fn update_enemy_killed(&self, player: &mut Player) -> SceneTransition {
+        player.get_entity_mut().end_turn();
         player.resolve_all(self.get_enemy().get_on_death())
     }
 
