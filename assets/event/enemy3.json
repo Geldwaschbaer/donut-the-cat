@@ -2,21 +2,28 @@
   "type": "EnterCombat",
   "data": {
     "entity": {
-      "name": "Ant Colony",
+      "name": "Great White Shark",
       "dexterity": 1,
-      "intelligence": 1,
-      "strength": 2,
-      "constitution": 3,
+      "intelligence": 3,
+      "strength": 3,
+      "constitution": 6,
       "attacks": [
         {
-          "description": "Bite",
-          "base_damage": 2,
+          "description": "Shark-Bite",
+          "base_damage": 3,
           "base_heal": 0,
           "required_mana": 0,
-          "scales_with": "Dex"
+          "scales_with": "Str"
+        },
+        {
+          "description": "Water Fin",
+          "base_damage": 5,
+          "base_heal": 0,
+          "required_mana": 3,
+          "scales_with": "Str"
         }
       ],
-      "texture": "assets/entity/enemy2.png"
+      "texture": "assets/entity/enemy3.png"
     },
     "on_death": [
       {
@@ -26,14 +33,14 @@
           "texture": "assets/dialog/shoppe.png",
           "dialogs": [
             {
-              "description": "Choose witch stat you want to upgrade.",
+              "description": "You can upgrade one stat two times. Choose wich stat you want to upgrade.",
               "options": [
                 {
                   "description": "Upgrade Strenght",
                   "events": [
                     {
                       "type": "UpgradeStat",
-                      "data": ["Str", 1]
+                      "data": ["Str", 2]
                     }
                   ],
                   "next": 1
@@ -43,7 +50,7 @@
                   "events": [
                     {
                       "type": "UpgradeStat",
-                      "data": ["Dex", 1]
+                      "data": ["Dex", 2]
                     }
                   ],
                   "next": 1
@@ -53,7 +60,7 @@
                   "events": [
                     {
                       "type": "UpgradeStat",
-                      "data": ["Con", 1]
+                      "data": ["Con", 2]
                     }
                   ],
                   "next": 1
@@ -63,7 +70,7 @@
                   "events": [
                     {
                       "type": "UpgradeStat",
-                      "data": ["Int", 1]
+                      "data": ["Int", 2]
                     }
                   ],
                   "next": 1
