@@ -30,12 +30,14 @@ pub fn draw_lifebar(offset: &mut Vec2, entity: &Entity, player: &Player) {
         &format!("hp: {}/{}, mp: {}/{}", health.0, health.1, mana.0, mana.1),
     );
     for (index, buff) in entity.get_buffs().iter().enumerate() {
-        draw_texture(
-            player.get_buff_icon(buff.get_type()),
-            pos.x,
-            pos.y + 38.0 * index as f32,
-            WHITE,
-        );
+        let ry = pos.y + 38.0 * index as f32;
+        draw_texture(player.get_buff_icon(buff.get_type()), pos.x, ry, WHITE);
+
+        let (x, y) = mouse_position();
+        if (pos.x < x && x < pos.x + 32.0) && (ry < y && y < ry + 32.0) {
+            draw_shadowbox(Rect::new(x, y, 120.0, 30.0));
+            draw_p(&mut Vec2::new(x + 10.0, y + 20.0), &buff.display());
+        }
     }
 
     draw_shadowbox_ex(

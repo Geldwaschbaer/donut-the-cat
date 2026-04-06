@@ -48,6 +48,14 @@ impl Buff {
     pub fn get_type(&self) -> &BuffType {
         &self.r#type
     }
+
+    pub fn display(&self) -> String {
+        if self.data > 0 {
+            format!("{} ({})", self.get_type().name(), self.data)
+        } else {
+            self.get_type().name().into()
+        }
+    }
 }
 
 #[derive(Copy, Clone, Deserialize)]
@@ -61,6 +69,17 @@ pub enum BuffType {
 }
 
 impl BuffType {
+    pub fn name(&self) -> &str {
+        match self {
+            Self::Berserk => "Berserk",
+            Self::Block => "Block",
+            Self::Burn => "Burn",
+            Self::Poison => "Poison",
+            Self::Vulnerable => "Vulnerable",
+            Self::Weak => "Weak",
+        }
+    }
+
     pub fn ordinal(&self) -> usize {
         *self as usize
     }
