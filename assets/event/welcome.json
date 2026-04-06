@@ -1,45 +1,51 @@
 {
   "type": "OpenDialog",
   "data": {
-    "title": "ENTER THE DUNGEON",
+    "title": "THE DUNGEON CALLS",
     "texture": "assets/dialog/staircase.png",
     "dialogs": [
       {
-        "description": "Welcome to the game.",
+        "description": "It's time to go on an epic quest to slay the evil dragon that lurks in the depths of this dungeon\n",
         "options": [
-          {
-            "description": "Already know everything",
-            "events": [],
-            "next": 2
-          },
-          {
-            "description": "Tell me more.",
-            "events": [],
-            "next": 1
-          }
+            {
+                "description": "OK",
+                "events": [],
+                "next": 1
+            },
+            {
+                "description": "I Already know everything",
+                "events": [],
+                "next": 3
+            }
         ]
       },
       {
-        "description": "Slay the dragon! I don't know more.",
+        "description": "Unfortunately the 'brave' knight that was assigned to go on this quest tripped over a cat and fell off a cliff...\nSo now Donut, the totally unrelated cat, has to take up the cumbersome chore that the incompetent knight left behind.\n",
         "options": [
-          {
-            "description": "Thanks, that was really helpful!",
-            "events": [],
-            "next": 2
-          },
-          {
-            "description": "That was ... \nnot really helpful? But better then nothing!",
-            "event": [
-              {
-                "type": "ReturnToMap"
-              }
-            ],
-            "next": 2
-          }
+            {
+                "description": "OK",
+                "events": [],
+                "next": 3
+            },
+            {
+                "description": "Did Donut kill a guy?!",
+                "events": [],
+                "next": 2
+            }
         ]
       },
       {
-        "description": "Choose your Class.",
+        "description": "NO WAY!! He would never do such a thing!\nDonut is a very well mannered feline! Shame on You for assuming such a horrible thing!!!\n",
+        "options": [
+            {
+                "description": "Sure...",
+                "events": [],
+                "next": 3
+            }
+        ]
+      },
+      {
+        "description": "Choose your Class. Yes even cats can have a hobby, it's nothing special dont worry about it :):)\n",
         "options": [
           {
             "description": "Wizard",
@@ -55,7 +61,7 @@
               {
                 "type": "LearnAttack",
                 "data": {
-                  "description": "Fireball (Applies Burn to Enemy",
+                  "description": "Fireball (Applies Burn to Enemy)",
                   "base_damage": 3,
                   "required_mana": 1,
                   "scales_with": "Int",
@@ -73,7 +79,7 @@
                 }
               }
             ],
-            "next": 3
+            "next": 4
           },
           {
             "description": "Knight",
@@ -113,7 +119,7 @@
                 }
               }
             ],
-            "next": 3
+            "next": 4
           },
           {
             "description": "Cleric",
@@ -145,21 +151,21 @@
                 }
               }
             ],
-            "next": 3
+            "next": 4
           }
         ]
       },
       {
-        "description": "All stats and skills were upgraded.",
+        "description": "Great! you are such a talented little cat, Donut!\n",
         "options": [
           {
-            "description": "I am ready!",
+            "description": "Let's kill something!",
             "events": [
               {
                 "type": "ReturnToMap"
               }
             ],
-            "next": 3
+            "next": 4
           }
         ]
       }
