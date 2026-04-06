@@ -67,7 +67,7 @@ impl MapScene {
                 neig,
                 is_option || is_choosen,
                 if is_option && map_node.is_visited() {
-                    VIOLET
+                    NEXT_COL
                 } else if is_choosen {
                     ACTIVATED
                 } else {
@@ -86,7 +86,7 @@ impl MapScene {
             y,
             22.,
             if is_option {
-                VIOLET
+                NEXT_COL
             } else if map_node.is_visited() {
                 ACTIVATED
             } else {
@@ -103,7 +103,7 @@ impl MapScene {
                 0.,
                 3.,
                 360.,
-                if is_option { VIOLET } else { BLACK },
+                if is_option { NEXT_COL } else { Color::from_rgba(0, 0, 0, 0)},
             )
         }
         // Draw the map icon.

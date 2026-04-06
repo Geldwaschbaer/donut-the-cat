@@ -2,8 +2,9 @@ use crate::entity::{Entity, player::Player};
 use macroquad::prelude::*;
 use std::iter::Iterator;
 
-pub const ACTIVATED: Color = Color::from_hex(0x1b252e);
-pub const AVAILABLE: Color = Color::from_hex(0x585858);
+pub const ACTIVATED: Color = Color::from_hex(0xaa0000);
+pub const AVAILABLE: Color = Color::from_hex(0x555555);
+pub const NEXT_COL: Color = Color::from_hex(0xff55ff);
 pub const TEXT_COL: Color = Color::from_hex(0x00AA00);
 pub const HEADER_COL: Color = Color::from_hex(0x55FF55);
 pub const BACKGROUND: Color = Color::from_hex(0x000000);
