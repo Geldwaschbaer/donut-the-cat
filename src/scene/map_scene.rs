@@ -21,22 +21,45 @@ impl MapScene {
         }
     }
 
+    fn draw_background(&self) {
+        clear_background(BACKGROUND);
+        draw_texture_ex(
+            self.map.get_background(),
+            0.0,
+            0.0,
+            WHITE,
+            DrawTextureParams {
+                dest_size: Some(Vec2::new(screen_width(), screen_height())),
+                ..Default::default()
+            },
+        );
+    }
+
     fn draw_map(&self, player: &Player) {
+        // Set camera for map movement.
+        set_camera(&Camera2D {
+            target: vec2(
+                self.camera_pos.x + screen_width() / 2.0,
+                self.camera_pos.y + screen_height() / 2.0,
+            ),
+            zoom: vec2(2.0 / screen_width(), 2.0 / screen_height()),
+            ..Default::default()
+        });
+        // We first draw the connections and then the rooms themself,
+        // because otherwise the connections would be drawn over the room icons.
         for room in self.get_map().get_rooms() {
             self.draw_connections(room, player);
         }
         for room in self.get_map().get_rooms() {
             self.draw_room(room, player);
         }
+        // Reset camera.
+        set_default_camera();
     }
 
     fn draw_connections(&self, room: &Room, player: &Player) {
         for neig in room.get_neighbours() {
-            let neig = self
-                .get_map()
-                .get_rooms()
-                .get(*neig)
-                .expect("element exists");
+            let neig = self.get_map().get_room(*neig);
             let is_choosen = room.is_visited() && neig.is_visited();
             let is_option = self.is_player_option(neig, player);
             self.draw_path(
@@ -58,9 +81,6 @@ impl MapScene {
         let x = room.get_position().x * screen_width();
         let y = room.get_position().y * screen_height();
         let is_option = self.is_player_option(room, player);
-        if is_option {
-            draw_arc(x, y, 120, 26., 0., 3., 360., VIOLET)
-        }
         draw_circle(
             x,
             y,
@@ -73,15 +93,26 @@ impl MapScene {
                 AVAILABLE
             },
         );
+        // If this room can be choosen by the player or was already visited, draw a ring around it.
+        if is_option || room.is_visited() {
+            draw_arc(
+                x,
+                y,
+                120,
+                26.,
+                0.,
+                3.,
+                360.,
+                if is_option { VIOLET } else { BLACK },
+            )
+        }
+        // Draw the map icon.
         draw_texture(
             self.get_map().get_icon(room.get_icon()),
             x - 16.0,
             y - 16.0,
             WHITE,
         );
-        if room.is_visited() {
-            draw_arc(x, y, 120, 26., 0., 3., 360., BLACK)
-        }
     }
 
     fn draw_path(&self, start: &Room, end: &Room, thicker: bool, color: Color) {
@@ -95,54 +126,7 @@ impl MapScene {
         );
     }
 
-    fn is_player_option(&self, room: &Room, player: &Player) -> bool {
-        let player_position = self
-            .get_map()
-            .get_rooms()
-            .get(player.get_map_position())
-            .expect("expect exists");
-        for neig in player_position.get_neighbours() {
-            let neig = self.get_map().get_room(*neig);
-            if std::ptr::eq(neig, room) {
-                return true;
-            }
-        }
-        false
-    }
-
-    pub fn get_map(&self) -> &Map {
-        &self.map
-    }
-
-    pub fn get_map_mut(&mut self) -> &mut Map {
-        &mut self.map
-    }
-}
-
-impl Scene for MapScene {
-    fn draw(&self, player: &Player) {
-        clear_background(BACKGROUND);
-        draw_texture_ex(
-            self.map.get_background(),
-            0.0,
-            0.0,
-            WHITE,
-            DrawTextureParams {
-                dest_size: Some(Vec2::new(screen_width(), screen_height())),
-                ..Default::default()
-            },
-        );
-        set_camera(&Camera2D {
-            target: vec2(
-                self.camera_pos.x + screen_width() / 2.0,
-                self.camera_pos.y + screen_height() / 2.0,
-            ),
-            zoom: vec2(2.0 / screen_width(), 2.0 / screen_height()),
-            ..Default::default()
-        });
-        self.draw_map(player);
-
-        set_default_camera();
+    fn draw_legend(&self) {
         draw_shadowbox(Rect::new(
             screen_width() * 0.8,
             screen_height() * 0.15,
@@ -172,7 +156,9 @@ impl Scene for MapScene {
                 ..Default::default()
             },
         );
+    }
 
+    fn draw_stats(&self, player: &Player) {
         draw_shadowbox(Rect::new(
             screen_width() * 0.8,
             screen_height() * 0.55,
@@ -193,7 +179,7 @@ impl Scene for MapScene {
         );
     }
 
-    fn update(&mut self, player: &mut Player) -> SceneTransition {
+    fn update_map_drag(&mut self) {
         let (x, y) = mouse_position();
         if is_mouse_button_down(MouseButton::Middle) || is_mouse_button_down(MouseButton::Right) {
             if let Some(position) = self.last_pos {
@@ -203,7 +189,11 @@ impl Scene for MapScene {
             }
         }
         self.last_pos = Some(Vec2 { x, y });
+    }
+
+    fn update_room_clicked(&mut self, player: &mut Player) -> SceneTransition {
         if is_mouse_button_down(MouseButton::Left) {
+            let (x, y) = mouse_position();
             let room = self.get_map().get_room(player.get_map_position());
             for neig_num in room.get_neighbours() {
                 let target = *neig_num;
@@ -222,5 +212,42 @@ impl Scene for MapScene {
             }
         }
         SceneTransition::None
+    }
+
+    fn is_player_option(&self, room: &Room, player: &Player) -> bool {
+        let player_position = self
+            .get_map()
+            .get_rooms()
+            .get(player.get_map_position())
+            .expect("expect exists");
+        for neig in player_position.get_neighbours() {
+            let neig = self.get_map().get_room(*neig);
+            if std::ptr::eq(neig, room) {
+                return true;
+            }
+        }
+        false
+    }
+
+    pub fn get_map(&self) -> &Map {
+        &self.map
+    }
+
+    pub fn get_map_mut(&mut self) -> &mut Map {
+        &mut self.map
+    }
+}
+
+impl Scene for MapScene {
+    fn draw(&self, player: &Player) {
+        self.draw_background();
+        self.draw_map(player);
+        self.draw_legend();
+        self.draw_stats(player);
+    }
+
+    fn update(&mut self, player: &mut Player) -> SceneTransition {
+        self.update_map_drag();
+        self.update_room_clicked(player)
     }
 }
