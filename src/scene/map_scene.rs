@@ -175,7 +175,7 @@ impl MapScene {
         ));
         let mut pos = Vec2::new(screen_width() * 0.8 + 20., screen_height() * 0.55 + 40.0);
         draw_h1(&mut pos, "Your Stats");
-        draw_p(
+        draw_p_ex(
             &mut pos,
             &format!(
                 "Str: {}\nDex: {}\nCon: {}\nInt: {}",
@@ -184,6 +184,10 @@ impl MapScene {
                 player.get_entity().get_stat(&Stat::Con),
                 player.get_entity().get_stat(&Stat::Int)
             ),
+            DrawParagraphParams {
+                font_size: 32.0,
+                ..Default::default()
+            },
         );
     }
 
