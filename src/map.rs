@@ -1,7 +1,4 @@
-use crate::{
-    draw::{ACTIVATED, AVAILABLE},
-    event::Event,
-};
+use crate::event::Event;
 use async_from::{AsyncFrom, async_trait};
 use macroquad::prelude::*;
 use serde::Deserialize;
@@ -27,39 +24,6 @@ impl Map {
         };
 
         Map::async_from(builder).await
-    }
-
-    pub fn draw(&self) {
-        for room in &self.rooms {
-            let x = room.get_position().x * screen_width();
-            let y = room.get_position().y * screen_height();
-            for neig in room.get_neighbours() {
-                let neig = self.rooms.get(*neig).expect("element exists");
-                let choosen = room.is_visited() && neig.is_visited();
-                draw_line(
-                    x,
-                    y,
-                    neig.get_position().x * screen_width(),
-                    neig.get_position().y * screen_height(),
-                    if choosen { 3. } else { 2. },
-                    if choosen { ACTIVATED } else { AVAILABLE },
-                );
-            }
-            draw_circle(
-                x,
-                y,
-                22.,
-                if room.is_visited() {
-                    ACTIVATED
-                } else {
-                    AVAILABLE
-                },
-            );
-            draw_texture(&room.texture, x - 16.0, y - 16.0, WHITE);
-            if room.is_visited() {
-                draw_arc(x, y, 120, 26., 0., 3., 360., BLACK)
-            }
-        }
     }
 
     pub fn get_rooms(&self) -> &Vec<Room> {
@@ -130,6 +94,10 @@ impl Room {
 
     pub fn mark_visited(&mut self) {
         self.visited = true;
+    }
+
+    pub fn get_icon(&self) -> &Texture2D {
+        &self.texture
     }
 }
 

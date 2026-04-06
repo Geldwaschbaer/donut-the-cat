@@ -1,7 +1,7 @@
 use crate::{
     draw::*,
     entity::{Stat, player::Player},
-    map::Map,
+    map::{Map, Room},
     scene::{Scene, SceneTransition},
 };
 use macroquad::prelude::*;
@@ -19,6 +19,90 @@ impl MapScene {
             camera_pos: Vec2::splat(0.),
             last_pos: None,
         }
+    }
+
+    fn draw_map(&self, player: &Player) {
+        for room in self.get_map().get_rooms() {
+            self.draw_connections(room, player);
+        }
+        for room in self.get_map().get_rooms() {
+            self.draw_room(room, player);
+        }
+    }
+
+    fn draw_connections(&self, room: &Room, player: &Player) {
+        for neig in room.get_neighbours() {
+            let neig = self
+                .get_map()
+                .get_rooms()
+                .get(*neig)
+                .expect("element exists");
+            let is_choosen = room.is_visited() && neig.is_visited();
+            let is_option = self.is_player_option(neig, player);
+            self.draw_path(
+                room,
+                neig,
+                is_option || is_choosen,
+                if is_option && room.is_visited() {
+                    VIOLET
+                } else if is_choosen {
+                    ACTIVATED
+                } else {
+                    AVAILABLE
+                },
+            );
+        }
+    }
+
+    fn draw_room(&self, room: &Room, player: &Player) {
+        let x = room.get_position().x * screen_width();
+        let y = room.get_position().y * screen_height();
+        let is_option = self.is_player_option(room, player);
+        if is_option {
+            draw_arc(x, y, 120, 26., 0., 3., 360., VIOLET)
+        }
+        draw_circle(
+            x,
+            y,
+            22.,
+            if is_option {
+                VIOLET
+            } else if room.is_visited() {
+                ACTIVATED
+            } else {
+                AVAILABLE
+            },
+        );
+        draw_texture(room.get_icon(), x - 16.0, y - 16.0, WHITE);
+        if room.is_visited() {
+            draw_arc(x, y, 120, 26., 0., 3., 360., BLACK)
+        }
+    }
+
+    fn draw_path(&self, start: &Room, end: &Room, thicker: bool, color: Color) {
+        draw_line(
+            start.get_position().x * screen_width(),
+            start.get_position().y * screen_height(),
+            end.get_position().x * screen_width(),
+            end.get_position().y * screen_height(),
+            if thicker { 4. } else { 2. },
+            color,
+        );
+    }
+
+    fn is_player_option(&self, room: &Room, player: &Player) -> bool {
+        let player_position = self
+            .get_map()
+            .get_rooms()
+            .get(player.get_map_position())
+            .expect("expect exists");
+        for neig in player_position.get_neighbours() {
+            let neig = self.get_map().get_room(*neig);
+            if std::ptr::eq(neig, room) {
+                return true;
+            }
+        }
+        false
     }
 
     pub fn get_map(&self) -> &Map {
@@ -51,37 +135,7 @@ impl Scene for MapScene {
             zoom: vec2(2.0 / screen_width(), 2.0 / screen_height()),
             ..Default::default()
         });
-        let room = self
-            .get_map()
-            .get_rooms()
-            .get(player.get_map_position())
-            .expect("expect exists");
-        for neig in room.get_neighbours() {
-            let neig = self
-                .get_map()
-                .get_rooms()
-                .get(*neig)
-                .expect("element exists");
-            draw_line(
-                room.get_position().x * screen_width(),
-                room.get_position().y * screen_height(),
-                neig.get_position().x * screen_width(),
-                neig.get_position().y * screen_height(),
-                3.,
-                DARKPURPLE,
-            );
-            draw_arc(
-                neig.get_position().x * screen_width(),
-                neig.get_position().y * screen_height(),
-                120,
-                26.,
-                0.,
-                3.,
-                360.,
-                DARKPURPLE,
-            )
-        }
-        self.get_map().draw();
+        self.draw_map(player);
 
         set_default_camera();
         draw_shadowbox(Rect::new(
